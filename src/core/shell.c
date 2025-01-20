@@ -11,25 +11,46 @@
 /* ************************************************************************** */
 #include "./core.h"
 
+static bool	is_empty_line(const char *line)
+{
+	size_t	i;
+
+	i = 0;
+	while (line[i] && ft_isspace(line[i]))
+		i++;
+	if (!line[i])
+		return (true);
+	return (false);
+}
+
+static bool	build_ast_tree(t_shell *shell)
+{
+	shell->tokens = tokenise(shell->line);
+	if (!shell->tokens)
+	{
+		ft_putendl_fd("minishell: tokenisation failed", STDERR_FILENO);
+		free(shell->line);
+		return (false);
+	}
+	shell->ast = parse(shell->tokens, shell);
+	if (shell->ast != NULL)
+		return (true);
+	return (false);
+}
+
 bool	parse_and_build_ast(t_shell *shell)
 {
 	size_t	i;
 
 	i = 0;
-	while (shell->line[i] && (shell->line[i] == ' ' || shell->line[i] == '\t'))
-		i++;
-	if (!shell->line[i])
-		return (false);
-	if (shell->line[i])
-		add_history(shell->line);
-	shell-tokens = tokenise(shell->line);
-	if (!shell->tokens)
+	if (!shell->line || is_empty_line(shell->line))
 	{
 		free(shell->line);
+		shell->line = NULL;
 		return (false);
 	}
-	shell->ast = parse(shell->tokens, shell);
-	if (!shell->ast)
+	add_history(shell->line);
+	if (!build_ast_tree(shell))
 	{
 		free(shell->line);
 		shell->line = NULL;
@@ -38,21 +59,19 @@ bool	parse_and_build_ast(t_shell *shell)
 	return (true);
 }
 
-static bool valid_usr_input(t_shell *shell)
+static bool	valid_usr_input(t_shell *shell)
 {
-	bool	invalid;
-
 	if (!shell->line)
 	{
 		ft_putendl_fd("exit", STDOUT_FILENO);
-		invalid = false;
+		return (false);
 	}
 	if (shell->line[0] == '\0')
 	{
 		free(shell->line);
-		invalid = true;
+		return (false);
 	}
-	return (invalid);
+	return (true);
 }
 
 void	interactive_loop(t_shell *shell)
@@ -63,21 +82,15 @@ void	interactive_loop(t_shell *shell)
 		shell->line = readline(PROMPT);
 		if (!valid_usr_input)
 			break ;
-		if (parse_and_build_ast(shell))
+		if (!parse_and_build_ast(shell))
+			continue ;
+		if (shell->ast)
 		{
-			if (shell->ast)
-			{
-				shell->exit_status = execute_ast(shell, shell->ast);
-				add_command_to_history(shell, shell->ast);
-				shell->ast = NULL:
-			}
-			if (ft_strcmp(shell->line, "exit") == 0)
-			{
-				cleanup_current_command(shell);
-				break ;
-			}
-			cleanup_current_command(shell);
+			shell->exit_status = execute_ast(shell, shell->ast);
+			add_command_history(shell, shell->ast);
+			shell->ast = NULL;
 		}
+		cleanup_current_command(shell);
 	}
 	cleanup_shell(shell);
 }
