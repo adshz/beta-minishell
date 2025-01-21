@@ -9,7 +9,8 @@
 /*   Updated: 2025/01/16 17:43:46 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "./core.h"
+#include "core.h"
+#include "shell.h"
 
 static bool	is_empty_line(const char *line)
 {
