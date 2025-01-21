@@ -13,7 +13,96 @@
 #include "shell.h"
 #include "types.h"
 
+/**
+ * @brief Gets the shell's process ID using fork technique
+ *
+ * This function determines the shell's PID by using a fork() trick;
+ * 1. Creates a child process using fork()
+ * 2. Child process exits immediately
+ * 3. Parent process waits for child to exit
+ * 4. Parent process calculates its PID using child's PID
+ *
+ * The calculation works because
+ *  - fork() returns child's PID to parent
+ *  - Child PIDs are typically parent's PID + 1
+ *  - Therefore parent's PID = child's PID -1
+ *
+ * @param shell Pointer to the shell structure to store PID
+ *
+ * @note Exits program if fork fails;
+ */
+static int	get_shell_pid(t_shell *shell)
+{
+	pid_t	pid;
 
+	pid = fork();
+	if (pid < 0)
+	{
+		ft_putendl_fd("Child Process Fork Failure & Failed to get shell PID", \
+				STDERR_FILENO);
+		return (ERROR);
+	}
+	if (pid == 0)
+		exit(SUCCESS);
+	waitpid(pid, NULL, 0);
+	shell->pid = pid - 1;
+	return (SUCCESS);
+}
+
+/**
+ * @brief Initialises or increments the SHLVL (Shell Level) enviornment variable
+ *
+ * This static function manages the shell level counter, which tracks how many
+ * nested shell deep we are. It either initialises SHLVL to 1 or increments to
+ * the existing value
+ *
+ * @param shell Pointer to the shell structure containing environement variable
+ *
+ * @note SHLVL defaults to 1 if not present or invalid
+ * @note Reports envorinment variable errors via handle_error
+ * 
+ * @see hashmap_search() for environement variable lookup
+ * @see ft_itoa() for integer to string conversion
+ * @see handle_error() for error reporting
+ * @return Return value description
+ */
+static void	init_shlvl(t_shell *shell)
+{
+	char	*tmp;
+	int		shlvl;
+
+	shlvl = 1;
+	tmp = hashmap_search(shell->env, "SHLVL");
+	if (tmp && ft_atoi(tmp) > 0)
+		shlvl = ft_atoi(tmp) + 1;
+	tmp = ft_itoa(shlvl);
+	if (!tmp)
+	{
+		handle_error(shell, ERR_ENV, "Environment variable SHLVL failure");
+		return ;
+	}
+	hashmap_insert(shell->env, "SHLVL", tmp, 0);
+	free(tmp);
+}
+/**
+ * @brief Initialises the PWD (Present working directory) environement variable
+ *
+ * This static function checks if PWD exists in the environment variable,
+ * if not, the function sets the current present working directory to PWD.
+ * getcwd() dynamically allocates memory 
+ *
+ * @param shell Pointer to the shell structure containing environment hashmap
+ * 
+ * @note Only sets PWD if it doesn't already exist in environment
+ * @note Uses getcwd(NULL, 0) for dynamic buffer allocation
+ * @note Handles memory cleanup after hashmap insertion
+ * @note Report errors through handle_error if getcwd() fails
+ *
+ * @see hashmap_search() for environment variable lookup
+ * @see hashmap_insert() for environment variable setting
+ * @see getcwd() for current working directory retrieval
+ * @see handle_error() for error reporting 
+ */
 static void	init_pwd(t_shell *shell)
 {
 	char	*tmp;
@@ -22,7 +111,10 @@ static void	init_pwd(t_shell *shell)
 	{
 		tmp = getcwd(NULL, 0)
 		if (!tmp)
+		{
+			handle_error(shell, ERR_NOT_FOUND, "Current Directory Not Found");
 			return ;
+		}
 		hashmap_insert(shell->env, "PWD", tmp, 0);
 		free(tmp);
 	}
@@ -63,8 +155,11 @@ void	init_env_vars(t_shell *shell, char *argv[])
 	init_pwd(shell);
 	init_shlvl(shell);
 	if (!hashmap_search(shell->env, "PATH"))
+	{
 		hashmap_insert(shell->env, "PATH", \
-				 "/usr/local/sbin:/usr/local/bin:/usr/bin:/bin", 0)
+				 "/usr/local/sbin:/usr/local/bin:/usr/bin:/bin", 0);
+		return ;
+	}
 	if (!hashmap_search(shell->env, "_"))
 		hashmap_insert(shell->env, "_", argv[0], 0)
 	hashmap_remove(shell->env, "OLDPWD");
@@ -98,7 +193,7 @@ void	init_env_vars(t_shell *shell, char *argv[])
  * @see get_shell_pid() for getting shell process ID
  * 
  */
-void	init_shell(t_shell *shell, char *argv[], char *envp[])
+int	init_shell(t_shell *shell, char *argv[], char *envp[])
 {
 	ft_memset(shell, 0, sizeof(t_shell));
 	if (!envp)
@@ -107,13 +202,19 @@ void	init_shell(t_shell *shell, char *argv[], char *envp[])
 		shell->env = env_to_hash(envp);
 	if (!shell->env)
 	{
-		handle_error(shell, ERR_ENV, \
-			   "Environment variable initialisation failed");
-		exit(EXIT_ERROR);
+		ft_putendl_fd("Environment variable initialisation failed", \
+				STDERR_FILENO);
+		cleanup_shell(shell);
+		return (ERROR);
 	}
 	shell->stdin_backup = dup(STDIN_FILENO);
 	shell->stdout_backup = dup(STDOUT_FILENO);
 	tcgetattr(STDIN_FILENO, &shell->term_settings);
 	init_env_vars(shell, argv);
-	get_shell_pid(shell);
+	if (get_shell_pid(shell) != SUCCESS)
+	{
+		cleanup_shell(shell);
+		return (ERROR);
+	}
+	return (SUCCESS);
 }

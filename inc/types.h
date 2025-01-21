@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 #ifndef TYPES_H
 # define TYPES_H
-
+# define SUCCESS 0
 # include <stdbool.h>
 # include <termios.h>
 # include <sys/types.h>

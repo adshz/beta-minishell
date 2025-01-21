@@ -30,7 +30,11 @@ int	main(int argc, char *argv[], char **envp)
 	int		exit_status;
 
 	validate_args(argc, argv);
-	init_shell(&shell, argv, envp);
+	if (init_shell(&shell, argv, envp) != SUCESS)
+	{
+		ft_putendl_fd("Shell Initialisation Failure", STDERR_FILENO);
+		return (ERROR);
+	}
 	interactive_loop(&shell);
 	exist_status = shell.exit_status;
 	rl_clear_history();
