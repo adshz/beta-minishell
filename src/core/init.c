@@ -6,12 +6,13 @@
 /*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 16:43:27 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/20 17:08:16 by szhong           ###   ########.fr       */
+/*   Updated: 2025/01/23 16:55:10 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "core.h"
 #include "shell.h"
-#include "types.h"
+#include "errors.h"
+#include "hashtable/hashtable.h"
 
 /**
  * @brief Gets the shell's process ID using fork technique
@@ -64,7 +65,6 @@ static int	get_shell_pid(t_shell *shell)
  * @see hashmap_search() for environement variable lookup
  * @see ft_itoa() for integer to string conversion
  * @see handle_error() for error reporting
- * @return Return value description
  */
 static void	init_shlvl(t_shell *shell)
 {
@@ -181,7 +181,7 @@ void	init_env_vars(t_shell *shell, char *argv[])
  * @param shell  Pointer of t_shell type to the shell structure to initailise
  * @param argv   Array of command line arguments
  * @param envp   Array of environment variables (can be NULL)
- * 
+ * @return SUCCESS OR ERROR
  *
  * @note If environment initialisation fails, the function exits with ERROR
  * status
@@ -199,7 +199,7 @@ int	init_shell(t_shell *shell, char *argv[], char *envp[])
 	if (!envp)
 		shell->env = hashmap_create();
 	else
-		shell->env = env_to_hash(envp);
+		shell->env = env_to_hashtable(envp);
 	if (!shell->env)
 	{
 		ft_putendl_fd("Environment variable initialisation failed", \
