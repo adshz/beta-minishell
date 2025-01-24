@@ -78,7 +78,8 @@ t_hashmap	*env_to_hashtable(char *envp[])
 	t_hashmap	*env;
 	int			i;
 
-	if (!envp || !(env = hashmap_create_table(128)))
+	env = hashmap_create_table(128);
+	if (!envp || !env)
 	{
 		ft_putendl_fd("Hashing Environment Table Failure!", STERR_FILENO);
 		return (NULL);
@@ -89,7 +90,7 @@ t_hashmap	*env_to_hashtable(char *envp[])
 		if (process_env_entry(envp[i], env) != 0)
 		{
 			ft_putendl_fd("Process Environement Variable Failure!", \
-				 STERR_FILENO);
+				STERR_FILENO);
 			hashmap_destory(env);
 			return (NULL);
 		}

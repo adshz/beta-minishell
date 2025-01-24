@@ -84,6 +84,7 @@ static void	init_shlvl(t_shell *shell)
 	hashmap_insert(shell->env, "SHLVL", tmp, 0);
 	free(tmp);
 }
+
 /**
  * @brief Initialises the PWD (Present working directory) environement variable
  *
@@ -109,7 +110,7 @@ static void	init_pwd(t_shell *shell)
 
 	if (!hashmap_search(shell->env, "PWD"))
 	{
-		tmp = getcwd(NULL, 0)
+		tmp = getcwd(NULL, 0);
 		if (!tmp)
 		{
 			handle_error(shell, ERR_NOT_FOUND, "Current Directory Not Found");
@@ -119,6 +120,7 @@ static void	init_pwd(t_shell *shell)
 		free(tmp);
 	}
 }
+
 /**
  * @brief Initialises essential environement variables for the shell
  *
@@ -157,11 +159,11 @@ void	init_env_vars(t_shell *shell, char *argv[])
 	if (!hashmap_search(shell->env, "PATH"))
 	{
 		hashmap_insert(shell->env, "PATH", \
-				 "/usr/local/sbin:/usr/local/bin:/usr/bin:/bin", 0);
+				"/usr/local/sbin:/usr/local/bin:/usr/bin:/bin", 0);
 		return ;
 	}
 	if (!hashmap_search(shell->env, "_"))
-		hashmap_insert(shell->env, "_", argv[0], 0)
+		hashmap_insert(shell->env, "_", argv[0], 0);
 	hashmap_remove(shell->env, "OLDPWD");
 }
 

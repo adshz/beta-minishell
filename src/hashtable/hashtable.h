@@ -34,7 +34,6 @@ typedef struct s_hash_item
 	struct s_hash_item	*next;
 }	t_hash_item;
 
-
 /* Hash Table Structure */
 /*
  * @breif Hash table structure for environment variables
