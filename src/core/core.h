@@ -13,6 +13,16 @@
 # define CORE_H
 # include "shell.h"
 
-bool	parse_and_build_ast(t_shell *shell);
-void	interactive_loop(t_shell *shell);
+/* Core structure initialisation */
+int     init_shell(t_shell *shell, char *argv[], char *envp[]);
+
+/* AST building and parsing */
+bool    parse_and_build_ast(t_shell *shell);
+void    interactive_loop(t_shell *shell);
+
+
+
+/* Signal handling */
+void    init_signals(void);
+
 #endif

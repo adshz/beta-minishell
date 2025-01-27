@@ -13,6 +13,18 @@
 
 int	g_signal = 0;
 
+/**
+ * @brief Validates command line arguments for the shell
+ *
+ * Ensures the shell is started with correct number of arguments.
+ * Exits with error code 127 if more than one argument is provided.
+ *
+ * @param argc Number of command line arguments
+ * @param argv Array of command line argument strings
+ *
+ * @note Shell only accepts program name as argument
+ * @note Exits program if validation fails
+ */
 static void	validate_args(int argc, char **argv)
 {
 	if (argc > 1)
@@ -24,6 +36,25 @@ static void	validate_args(int argc, char **argv)
 	}
 }
 
+/**
+ * @brief Entry point for the minishell program
+ *
+ * Program flow:
+ * - Validates command line arguments
+ * - Initializes shell environment and resources
+ * - Enters interactive command loop
+ * - Performs cleanup before exit
+ *
+ * @param argc Number of command line arguments
+ * @param argv Array of command line argument strings
+ * @param envp Array of environment variables
+ * @return Exit status of last executed command
+ *
+ * @note Exits with ERROR if shell initialization fails
+ * @see init_shell() for shell initialization
+ * @see interactive_loop() for main shell loop
+ * @see cleanup_shell() for resource cleanup
+ */
 int	main(int argc, char *argv[], char **envp)
 {
 	t_shell	shell;
@@ -36,7 +67,7 @@ int	main(int argc, char *argv[], char **envp)
 		exit(ERROR);
 	}
 	interactive_loop(&shell);
-	exist_status = shell.exit_status;
+	exit_status = shell.exit_status;
 	rl_clear_history();
 	cleanup_shell(&shell);
 	return (exit_status);

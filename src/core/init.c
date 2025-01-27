@@ -14,6 +14,19 @@
 #include "errors.h"
 #include "hashtable/hashtable.h"
 
+/**
+ * @brief Cleans up resources allocated during shell initialization
+ *
+ * Performs cleanup of resources allocated in init_shell:
+ * - Closes backup file descriptors
+ * - Frees environment hashtable
+ * - Zeros out shell structure memory
+ *
+ * @param shell Pointer to shell structure to clean up
+ *
+ * @note Safe to call with NULL pointer
+ * @note Used during initialization failure to prevent resource leaks
+ */
 static void	cleanup_intialisation(t_shell *shell)
 {
 	if (!shell)
@@ -30,6 +43,20 @@ static void	cleanup_intialisation(t_shell *shell)
 	ft_memset(shell, 0, sizeof(t_shell));
 }
 
+/**
+ * @brief Initializes I/O resources for the shell
+ *
+ * Sets up:
+ * - Backup of standard input file descriptor
+ * - Backup of standard output file descriptor
+ * - Terminal settings for proper signal handling
+ *
+ * @param shell Pointer to shell structure to initialize
+ * @return SUCCESS if all I/O resources initialized properly, ERROR otherwise
+ *
+ * @note File descriptors are backed up for handling pipes and redirections
+ * @note Terminal settings are needed for proper signal handling
+ */
 static int	init_io(t_shell *shell)
 {
 	shell->stdin_backup = dup(STDIN_FILENO);
@@ -117,11 +144,11 @@ int	init_shell(t_shell *shell, char *argv[], char *envp[])
 		return (ERROR);
 	ft_memset(shell, 0, sizeof(t_shell));
 	if (init_env(shell, envp) == SUCCESS && init_io(shell) == SUCCESS && \
-	get_shell_pid == SUCCESS)
+	get_shell_pid(shell) == SUCCESS)
 	{
 		init_env_vars(shell, argv);
 		return (SUCCESS);
 	}
-	cleanup_initialisation(shell);
+	cleanup_intialisation(shell);
 	return (ERROR);
 }
