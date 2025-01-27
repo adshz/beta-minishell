@@ -62,7 +62,7 @@ static void	handle_sigint(int signum)
  * @brief Initializes signal handling for the shell
  *
  * Sets up signal handlers for:
- * - SIGINT (Ctrl+C): Custom handler for displaying a newline,redisplaying prompt
+ * - SIGINT (Ctrl+C): Custom handler for showing a newline,redisplaying prompt
  * - SIGQUIT (Ctrl+\): Ignored in interactive mode
  *
  * Also:
