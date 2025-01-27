@@ -6,12 +6,12 @@
 /*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/15 15:55:46 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/15 16:02:46 by szhong           ###   ########.fr       */
+/*   Updated: 2025/01/27 16:20:46 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "./shell.h"
 
-int	g_signal = 0;
+extern int	g_signal;
 
 /**
  * @brief Validates command line arguments for the shell
