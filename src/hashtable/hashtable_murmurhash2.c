@@ -82,11 +82,25 @@ static void	finialise_hash(unsigned int *hash, unsigned int multiplier)
 /**
  * @brief Generates a hash value for a string key using Murmurhash2
  *
- * Implements a modified version of the Murmurhash2 algorithm:
- *   - Processes the key one byte at a time
- *   - Uses magic constant 0x5bd1e995 for mixing
- *   - Includes string length in initial hash
- *   - Applies avalanceeffect in hash finalisation
+ * Detailed explanation of the MurmurHash2 algorithm:
+ * 1. Initial mixing:
+ *   - Starts with string length XORed with 0
+ *   - This provides different starting points for different length strings.
+ *   - Helps in distributing hash values
+ *
+ * 2. Processing steos:
+ *   - Each byte(character) is processed invidually
+ *   - The magic constant 0x5bd1e995 is used for mixing
+ *   - Bit rotation helps in achieving avalanche effect
+ *
+ * @par Implementation Details:
+ * The algorithm processes the key in these steps:
+ * 1. Initialise hash with string length
+ * 2. For each character:
+ *   - Convert to unsigned char first
+ *   - Mix with magic constant
+ *   - Combine with running hash
+ * 3. Final mixing for better distribution
  *
  * @param key String to hash
  * @param table_size Size of the hash table (for modular operation)
@@ -95,14 +109,36 @@ static void	finialise_hash(unsigned int *hash, unsigned int multiplier)
  * @note in our case, table_size is 128, bash shell is 64
  * @note you can see how the finalise_hash() calculates hash values
  *
- * Properties:
- *   - Deterministic: Same key always produces same hash
- *   - Well-distributed: Minizes clustering
- *   - Fast: O(n) in this hash function time complexity is based on key length
+ * Properties:\n
+ *   - Deterministic: Same key always produces same hash\n
+ *   - Well-distributed: Minizes clustering\n
+ *   - Fast: O(n) in this hash function time complexity is based on key length\n
+ *
+ * @code
+ * // Processing the key "HOME"
+ * Initial hash = 0 ^ 4
+ * Process 'H' -> mix -> combine
+ * Process 'O' -> mix -> combine
+ * Process 'M' -> mix -> combine
+ * Process 'E' -> mix -> combine
+ * Final mixing
+ * Modulo operation with the table size
+ * return a value that acts as an index on the hash table
+ * @endcode
  *
  * @note MurmurHash2 creatd by Austin Appleby
- * @see process_chunk() for chunk processing
- * @see finalise_hash() for hash finialisation
+ * @note 
+ * Performance characteristics:\n
+ *   - O(n) time complexity\n
+ *   - Excellent distribution\n
+ *   - Low collision rate\n
+ *   - Memory efficient
+ *
+ * @see 
+ * Related functions: \n
+ * - process_chunk() - Handles individual chunk mixing
+ * - finalise_hash() - Performs final avalanche
+ * - hashmap_insert() - Uses this hash for insertion
  */
 size_t	hash_function(const char *key, size_t table_size)
 {
