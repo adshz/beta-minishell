@@ -11,6 +11,16 @@
 /* ************************************************************************** */
 #include "hashtable.h"
 
+/**
+ * @brief Frees memory allocated for a hash table item
+ *
+ * Deallocates all components of a hash item:
+ * - Key string
+ * - Value string
+ * - Item structure itself
+ *
+ * @param item Pointer to hash item to be freed
+ */
 static void	free_hashitem(t_hash_item *item)
 {
 	free(item->key);
@@ -18,6 +28,22 @@ static void	free_hashitem(t_hash_item *item)
 	free(item);
 }
 
+/**
+ * @brief Removes an item from the hash table by key
+ *
+ * Handles removal of items while maintaining the linked list structure:
+ * - Computes hash index for the key
+ * - Traverses the chain at that index
+ * - Updates pointers to maintain chain integrity
+ * - Frees the removed item
+ *
+ * @param table Hash table to remove from
+ * @param key   Key of the item to remove
+ *
+ * @note Safe to call with NULL table or key
+ * @note If key doesn't exist, function silently returns
+ * @note Updates chain pointers to maintain linked list structure
+ */
 void	hashmap_remove(t_hashmap *table, const char *key)
 {
 	size_t		idx;
