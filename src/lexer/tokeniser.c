@@ -11,6 +11,21 @@
 /* ************************************************************************** */
 #include "lexer.h"
 
+/**
+ * @brief Adds a new token to the end of token list
+ *
+ * Maintains the linked list structure of tokens by:
+ * - Handling empty list case (head is NULL)
+ * - Traversing to end of existing list
+ * - Attaching new token
+ *
+ * @param head      Current head of token list
+ * @param new_token Token to add to the list
+ * @return Updated head of token list, or NULL on failure
+ *
+ * @note Safe to call with NULL head (creates new list)
+ * @note Returns NULL if new_token is NULL
+ */
 static t_token	*add_token_to_list(t_token *head, t_token *new_token)
 {
 	t_token	*current;
@@ -26,6 +41,23 @@ static t_token	*add_token_to_list(t_token *head, t_token *new_token)
 	return (head);
 }
 
+/**
+ * @brief Creates a single token from input string
+ *
+ * Process:
+ * 1. Extracts token value from input
+ * 2. Determines token type
+ * 3. Creates token structure
+ *
+ * @param input Input string to process
+ * @param len   Length of token to extract
+ * @return New token structure, or NULL on failure
+ *
+ * @note Handles memory cleanup on failure
+ * @note Returns NULL for EOF tokens
+ * @see extract_token() for token value extraction
+ * @see get_token_type() for token type determination
+ */
 static t_token	*process_single_token(const char *input, size_t len)
 {
 	char			*value;
@@ -46,6 +78,21 @@ static t_token	*process_single_token(const char *input, size_t len)
 	return (new_token);
 }
 
+/**
+ * @brief Advances input pointer past whitespace characters
+ *
+ * Used to prepare input for token extraction by skipping:
+ * - Spaces
+ * - Tabs
+ * - Newlines
+ * - Other whitespace characters
+ *
+ * @param input String to process
+ * @return Pointer to first non-whitespace character
+ *
+ * @note Safe to call with NULL input
+ * @see ft_isspace() for whitespace determination
+ */
 static const char	*skip_whitespace(const char *input)
 {
 	while (input && ft_isspace(*input))
@@ -53,6 +100,30 @@ static const char	*skip_whitespace(const char *input)
 	return (input);
 }
 
+/**
+ * @brief Tokenizes input string into linked list of tokens
+ *
+ * Main tokenization process:
+ * 1. Skips whitespace
+ * 2. Determines token length
+ * 3. Processes individual tokens
+ * 4. Builds token list
+ *
+ * Used by the parser to break command line into processable tokens
+ * for AST construction.
+ *
+ * @param input Command line string to tokenize
+ * @return Head of token list, or NULL on failure
+ *
+ * @note Handles memory cleanup on any failure
+ * @note Returns NULL for empty input
+ * @see process_single_token() for individual token creation
+ * @see add_token_to_list() for list building
+ *
+ * Example token sequence:
+ * "ls -l | grep foo" becomes:
+ * WORD(ls) -> OPTION(-l) -> PIPE(|) -> WORD(grep) -> WORD(foo)
+ */
 t_token	*tokenise(const char *input)
 {
 	t_token	*head;
