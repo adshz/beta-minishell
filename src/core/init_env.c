@@ -88,7 +88,8 @@ static void	init_pwd(t_shell *shell)
 /**
  * @brief Initialises the shell's environment variables
  *
- * This function sets up the environment hashtable for the shell:\n
+ * This function sets up the environment hashtable with size of 1024 \
+ * for the shell:\n
  *   - Creates an empty hashtable if envp is NULL
  *   - Converts the environment array to a hashtable if envp exits
  *

@@ -15,7 +15,7 @@
 #include "hashtable/hashtable.h"
 
 /**
- * @brief Cleans up resources allocated during shell initialization
+ * @brief Cleans up resources allocated during shell initialisation
  *
  * Performs cleanup of resources allocated in init_shell:
  * - Closes backup file descriptors

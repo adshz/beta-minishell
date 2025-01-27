@@ -1,24 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   core.h                                             :+:      :+:    :+:   */
+/*   hashtable_search.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/16 15:57:55 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/21 17:04:58 by szhong           ###   ########.fr       */
+/*   Created: 2025/01/27 15:36:13 by szhong            #+#    #+#             */
+/*   Updated: 2025/01/27 15:38:12 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#ifndef CORE_H
-# define CORE_H
-# include "shell.h"
+#include "hashtable.h"
 
-/* Core structure initialisation */
-int		init_shell(t_shell *shell, char *argv[], char *envp[]);
-/* AST building and parsing */
-bool	parse_and_build_ast(t_shell *shell);
-void	interactive_loop(t_shell *shell);
-/* Signal handling */
-void	init_signals(void);
+char	*hashmap_search(t_hashmap *table, char *key)
+{
+	size_t		index;
+	t_hash_item	*item;
 
-#endif
+	if (!table || !key)
+		return (NULL);
+	index = hash_function(key, table->size);
+	item = table->items[index];
+	while (item)
+	{
+		if (ft_strcmp(item->key, key) == 0)
+			return (item->value);
+		item = item->next;
+	}
+	return (NULL);
+}
