@@ -17,6 +17,13 @@
 
 int	g_signal;
 
+/**
+ * @brief Disables the echoing of control characters in terminal
+ *
+ * Modifies terminal settings to prevent control characters (like ^C)
+ * from being displayed when signals are triggered.
+ * Uses termios structure to modify terminal attributes.
+ */
 static void	disable_ctrl_char_echo(void)
 {
 	struct termios	term;
@@ -26,6 +33,19 @@ static void	disable_ctrl_char_echo(void)
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
+/**
+ * @brief Signal handler for SIGINT (Ctrl+C)
+ *
+ * Handles interrupt signal by:
+ * 1. Setting global signal flag
+ * 2. Printing newline
+ * 3. Clearing and redisplaying prompt if in interactive mode
+ *
+ * @param signum Signal number (SIGINT)
+ *
+ * @note Uses readline functions to handle prompt redisplay
+ * @note Only redraws prompt if running in interactive terminal
+ */
 static void	handle_sigint(int signum)
 {
 	g_signal = signum;
@@ -38,6 +58,23 @@ static void	handle_sigint(int signum)
 	}
 }
 
+/**
+ * @brief Initializes signal handling for the shell
+ *
+ * Sets up signal handlers for:
+ * - SIGINT (Ctrl+C): Custom handler for displaying a newline,redisplaying prompt
+ * - SIGQUIT (Ctrl+\): Ignored in interactive mode
+ *
+ * Also:
+ * - Disables control character echo
+ * - Initializes global signal flag
+ * - Uses SA_RESTART to automatically restart interrupted system calls
+ *
+ * @note Uses sigaction for reliable signal handling
+ * @note Global signal flag is used for signal state tracking
+ * @note Ctrl+D (EOF) handling is not done here as it's not a signal
+ *       It's handled in interactive_loop through readline() return value
+ */
 void	init_signals(void)
 {
 	struct sigaction	sa;
