@@ -28,11 +28,11 @@
 */
 typedef enum e_tokeniser_state
 {
-    STATE_NORMAL,
-    STATE_IN_SINGLE_QUOTE,
-    STATE_IN_DOUBLE_QUOTE,
-    STATE_IN_BACKSLASH
-}   t_tokeniser_state;
+	STATE_NORMAL,
+	STATE_IN_SINGLE_QUOTE,
+	STATE_IN_DOUBLE_QUOTE,
+	STATE_IN_BACKSLASH
+}	t_tokeniser_state;
 
 /* Token types */
 /**
@@ -55,18 +55,18 @@ typedef enum e_tokeniser_state
 */
 typedef enum e_token_type
 {
-    TOKEN_WORD,
-    TOKEN_PIPE,
-    TOKEN_REDIRECT_IN,
-    TOKEN_REDIRECT_OUT,
-    TOKEN_APPEND,
-    TOKEN_HEREDOC,
-    TOKEN_AND,
-    TOKEN_OR,
-    TOKEN_SEMICOLON,
-    TOKEN_NEWLINE,
-    TOKEN_EOF
-}   t_token_type;
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIRECT_IN,
+	TOKEN_REDIRECT_OUT,
+	TOKEN_APPEND,
+	TOKEN_HEREDOC,
+	TOKEN_AND,
+	TOKEN_OR,
+	TOKEN_SEMICOLON,
+	TOKEN_NEWLINE,
+	TOKEN_EOF
+}	t_token_type;
 
 /**
  * @brief Token structure representing a lexical unit
@@ -77,10 +77,10 @@ typedef enum e_token_type
  */
 typedef struct s_token
 {
-    char            *value;
-    t_token_type    type;
-    struct s_token  *next;
-}   t_token;
+	char			*value;
+	t_token_type	type;
+	struct s_token	*next;
+}	t_token;
 
 /* Function Prototypes */
 
@@ -90,7 +90,7 @@ typedef struct s_token
  * @param input Command line to tokenize
  * @return Head of token list or NULL on error
  */
-t_token         *tokenise(const char *input);
+t_token				*tokenise(const char *input);
 
 /* Token Creation and Management */
 /**
@@ -99,13 +99,13 @@ t_token         *tokenise(const char *input);
  * @param value String value for token
  * @return New token or NULL on error
  */
-t_token         *create_token(t_token_type type, const char *value);
+t_token				*create_token(t_token_type type, const char *value);
 
 /**
  * @brief Frees token list and associated memory
  * @param head Head of token list to free
  */
-void            free_tokens(t_token *head);
+void				free_tokens(t_token *head);
 
 /* Token Type Handling */
 /**
@@ -113,14 +113,14 @@ void            free_tokens(t_token *head);
  * @param c Character to check
  * @return 1 if special character, 0 otherwise
  */
-int             is_special_char(char c);
+int					is_special_char(char c);
 
 /**
  * @brief Gets token type from token value
  * @param value String to analyze
  * @return Appropriate token type
  */
-t_token_type    get_token_type(const char *value);
+t_token_type		get_token_type(const char *value);
 
 /* State Management */
 /**
@@ -129,14 +129,14 @@ t_token_type    get_token_type(const char *value);
  * @param c Character being processed
  * @return Next tokenizer state
  */
-t_tokeniser_state get_next_state(t_tokeniser_state current_state, char c);
+t_tokeniser_state	get_next_state(t_tokeniser_state current_state, char c);
 
 /**
  * @brief Calculates length of next token
  * @param input String to analyze
  * @return Length of next token
  */
-size_t          get_token_length_with_state(const char *input);
+size_t				get_token_length_with_state(const char *input);
 
 /**
  * @brief Extracts token from input string
@@ -144,6 +144,6 @@ size_t          get_token_length_with_state(const char *input);
  * @param len Length to extract
  * @return New string containing token or NULL on error
  */
-char            *extract_token(const char *input, size_t len);
+char				*extract_token(const char *input, size_t len);
 
 #endif

@@ -32,7 +32,7 @@ t_token	*create_token(t_token_type type, const char *value)
 {
 	t_token	*token;
 
-	token = (t_token *)malloc(sizeof(t_token))
+	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
 		return (NULL);
 	token->type = type;
