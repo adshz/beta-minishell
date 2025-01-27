@@ -42,27 +42,10 @@ t_tokeniser_state	get_next_state(t_tokeniser_state current_state, char c)
 		return (STATE_NORMAL);
 	}
 	if (current_state == STATE_NORMAL)
-	{
-		if (c == '\\')
-			return (STATE_IN_BACKSLASH);
-		if (c == '\'')
-			return (STATE_IN_SINGLE_QUOTE);
-		if (c == '\"')
-			return (STATE_IN_DOUBLE_QUOTE);
-	}
-	else if (current_state == STATE_IN_DOUBLE_QUOTE)
-	{
-		if (c == '\\' && !was_backslash)
-		{
-			was_backslash = 1;
-			return (STATE_IN_BACKSLASH);
-		}
-		if (c == '\"' && !was_backslash)
-			return (STATE_NORMAL);
-		was_backslash = 0;
-	}
-	else if (current_state == STATE_IN_SINGLE_QUOTE \
-		&& c == '\'')
+		return (handle_normal_state(c));
+	if (current_state == STATE_IN_DOUBLE_QUOTE)
+		return (handle_double_quote_state(c, &was_backslash));
+	if (current_state == STATE_IN_SINGLE_QUOTE && c == '\'')
 		return (STATE_NORMAL);
 	return (current_state);
 }

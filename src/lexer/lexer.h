@@ -146,4 +146,13 @@ size_t				get_token_length_with_state(const char *input);
  */
 char				*extract_token(const char *input, size_t len);
 
+/* State Transitions */
+/**
+ * @brief Determines next tokenizer state
+ * @param current_state Current state
+ * @param c Character being processed
+ * @return Next tokenizer state
+ */
+t_tokeniser_state	get_next_state(t_tokeniser_state current_state, char c);
+
 #endif
