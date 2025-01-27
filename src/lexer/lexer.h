@@ -6,7 +6,7 @@
 /*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:09:24 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/27 18:01:11 by szhong           ###   ########.fr       */
+/*   Updated: 2025/01/27 18:51:39 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LEXER_H
@@ -68,13 +68,17 @@ typedef enum e_token_type
 	TOKEN_EOF
 }	t_token_type;
 
+/* Token Structure*/
 /**
- * @brief Token structure representing a lexical unit
+ * @brief Token structure for lexical analysis
  *
- * @param value String content of the token
- * @param type  Type classification of the token
- * @param next  Pointer to next token in list
- */
+ * Represents a single token in the input stream, storing its value
+ * type, and link to the next token in the sequence.
+ *
+ * @param value	Actual string content of the token (e.g. command name, flag)
+ * @param type	Type classification of token (e.g. TOKEN_WORD, TOKEN_PIPE..)
+ * @param next	Pointer to next token in the sequence, NULL if last token
+*/
 typedef struct s_token
 {
 	char			*value;
