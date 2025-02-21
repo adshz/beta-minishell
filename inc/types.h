@@ -3,22 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
+/*   By: evmouka <evmouka@student.42london.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/20 17:09:43 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/27 18:55:47 by szhong           ###   ########.fr       */
+/*   Updated: 2025/02/12 18:33:25 by evmouka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef TYPES_H
 # define TYPES_H
+
 # include <stdbool.h>
 # include <termios.h>
 # include <sys/types.h>
 # include "libft.h"
+# include "lexer/lexer.h"
+# include "hashtable/hashtable.h"
 
+# define SIG_HEREDOC_MODE 1
+# define SIG_HEREDOC_INT 2
+# define SIG_NONE 0
+
+/* Forward declarations */
+struct						s_ast_node;
+typedef struct s_ast_node	t_ast_node;
+
+/* Heredoc data structure */
+typedef struct s_heredoc_data
+{
+	char		*content_path;
+	int			content_fd;
+	const char	*delimiter;
+}	t_heredoc_data;
 
 /*########################################*/
-
 
 /*
  * Environment Structure
@@ -31,8 +49,7 @@
 // }	t_env;
 
 // use t_hash_item as t_env
-typedef t_hash_item t_env;
-
+typedef t_hash_item			t_env;
 
 /* Shell Structure */
 /**
@@ -42,10 +59,12 @@ typedef t_hash_item t_env;
  * such as command parsing data, execution state, environement management
  * process tracking, and terminal settings.
  * 
- * @param line				Current user command line being parsered by parser
- * @param tokens			List of tokens by scanner and lexer (lexcial analysis)
+ * @param line Current user command line being parsered by parser
+ * @param tokens List of tokens by scanner and lexer (lexcial analysis)
  * @param ast				Abstract syntax tree representing commands, flags etc
  * @param env				Environment variables stored by Hash Table
+ * @param env_array			Cached environment array
+ * @param env_modified		Flag to track if env was modified
  * @param cmds				History of executed commands using linked list
  * @param pid				Process ID of the shell
  * @param pids				Array of child process IDs
@@ -65,6 +84,8 @@ typedef struct s_shell
 	t_token			*tokens;
 	t_ast_node		*ast;
 	t_hashmap		*env;
+	char			**env_array;
+	bool			env_modified;
 	t_list			*cmds;
 	pid_t			pid;
 	pid_t			*pids;
@@ -76,6 +97,11 @@ typedef struct s_shell
 	bool			heredoc_sigint;
 	bool			signint_child;
 	bool			in_pipe;
+	int				in_heredoc;
+	int				signal;
 	struct termios	term_settings;
+	bool			in_double_quotes;
+	bool			in_single_quotes;
 }	t_shell;
+
 #endif

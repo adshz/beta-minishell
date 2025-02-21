@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   core.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
+/*   By: evmouka <evmouka@student.42london.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 15:57:55 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/21 17:04:58 by szhong           ###   ########.fr       */
+/*   Updated: 2025/02/12 23:25:03 by evmouka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,33 @@
  */
 #ifndef CORE_H
 # define CORE_H
+// Signal states for global signal handling
+# define SIG_NONE 0          // No signal/normal operation
+# define SIG_HEREDOC_MODE 1  // Currently in heredoc mode
+# define SIG_HEREDOC_INT 2   // Heredoc was interrupted
+# define SIG_REGULAR_INT 3   // Regular interrupt
 # include "shell.h"
+# include <signal.h>
+# include "lexer/lexer.h"
+/**
+ * 
+ * Without extern, each file would create its own separate variable 
+ * instead of using the one defined in main.c
+ */
+extern volatile sig_atomic_t	g_signal_status;
+
+/* Signal handling functions */
+void	setup_signals(void);
+void	setup_terminal_settings(void);
+void	disable_ctrl_char_echo(void);
+void	restore_signal_handlers(void);
+
+/* Shell initialization functions */
+int		init_terminal(t_shell *shell);
+int		init_environment(t_shell *shell, char **envp);
+int		init_env(t_shell *shell, char **envp);
+int		init_io(t_shell *shell);
+void	init_env_vars(t_shell *shell, char **argv);
 
 /* Core structure initialisation */
 /**
@@ -58,7 +84,7 @@ bool	parse_and_build_ast(t_shell *shell);
 void	interactive_loop(t_shell *shell);
 
 /* Signal handling */
-/**
+/*
  * @brief Initializes signal handlers for the shell
  *
  * Sets up handlers for:
@@ -67,5 +93,6 @@ void	interactive_loop(t_shell *shell);
  * - Other relevant signals
  */
 void	init_signals(void);
+void	handle_sigint(int sig);
 
 #endif

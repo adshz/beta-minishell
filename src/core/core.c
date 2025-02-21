@@ -11,25 +11,7 @@
 /* ************************************************************************** */
 #include "core.h"
 #include "shell.h"
-
-/**
- * @brief Checks if a line contains only whitespace characters
- *
- * @param line String to check
- * @return true if line is empty or contains only whitespace,
- *         false otherwise
- */
-static bool	is_empty_line(const char *line)
-{
-	size_t	i;
-
-	i = 0;
-	while (line[i] && ft_isspace(line[i]))
-		i++;
-	if (!line[i])
-		return (true);
-	return (false);
-}
+#include <signal.h>
 
 /**
  * @brief Builds abstract syntax tree from command line
@@ -50,11 +32,16 @@ static bool	build_ast_tree(t_shell *shell)
 	{
 		ft_putendl_fd("minishell: tokenisation failed", STDERR_FILENO);
 		free(shell->line);
+		shell->line = NULL;
 		return (false);
 	}
 	shell->ast = parse(shell->tokens, shell);
 	if (shell->ast != NULL)
 		return (true);
+	free_tokens(shell->tokens);
+	shell->tokens = NULL;
+	free(shell->line);
+	shell->line = NULL;
 	return (false);
 }
 
@@ -73,10 +60,7 @@ static bool	build_ast_tree(t_shell *shell)
  */
 bool	parse_and_build_ast(t_shell *shell)
 {
-	size_t	i;
-
-	i = 0;
-	if (!shell->line || is_empty_line(shell->line))
+	if (!shell->line || shell->line[0] == '\0')
 	{
 		free(shell->line);
 		shell->line = NULL;
@@ -85,8 +69,7 @@ bool	parse_and_build_ast(t_shell *shell)
 	add_history(shell->line);
 	if (!build_ast_tree(shell))
 	{
-		free(shell->line);
-		shell->line = NULL;
+		cleanup_current_command(shell);
 		return (false);
 	}
 	return (true);
@@ -97,7 +80,7 @@ bool	parse_and_build_ast(t_shell *shell)
  *
  * Checks for:
  * - NULL input (EOF/Ctrl+D): Prints "exit" and returns false
- * - Empty line: Frees line and returns false
+ * - Empty line: Frees line and returns true so we continue the loop
  *
  * @param shell Pointer to shell structure
  * @return true if input is valid for processing, false if shell should exit
@@ -112,10 +95,11 @@ static bool	valid_usr_input(t_shell *shell)
 		ft_putendl_fd("exit", STDOUT_FILENO);
 		return (false);
 	}
-	if (shell->line[0] == '\0')
+	if (shell->line[0] == '\0' || is_only_whitespace(shell->line))
 	{
 		free(shell->line);
-		return (false);
+		shell->line = NULL;
+		return (true);
 	}
 	return (true);
 }
@@ -144,11 +128,19 @@ void	interactive_loop(t_shell *shell)
 		if (!valid_usr_input(shell))
 			break ;
 		if (!parse_and_build_ast(shell))
+		{
+			if (g_signal_status == SIG_HEREDOC_INT || shell->heredoc_sigint)
+			{
+				cleanup_current_command(shell);
+				g_signal_status = SIG_NONE;
+				shell->heredoc_sigint = false;
+			}
 			continue ;
+		}
 		if (shell->ast)
 		{
 			shell->exit_status = execute_ast(shell, shell->ast);
-			add_command_history(shell, shell->ast);
+			add_command_to_history(shell, shell->ast);
 			shell->ast = NULL;
 		}
 		cleanup_current_command(shell);

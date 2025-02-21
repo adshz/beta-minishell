@@ -29,22 +29,12 @@
 static t_hash_item	*create_new_item(char *key, char *value)
 {
 	t_hash_item	*new_item;
-	char		*new_key;
-	char		*new_value;
 
 	new_item = (t_hash_item *)malloc(sizeof(t_hash_item));
 	if (!new_item)
 		return (NULL);
-	new_key = ft_strdup(key);
-	new_value = ft_strdup(value);
-	if (!new_key || !new_value)
-	{
-		free(new_key);
-		free(new_value);
-		free(new_item);
-	}
-	new_item->key = new_key;
-	new_item->value = new_value;
+	new_item->key = key;
+	new_item->value = value;
 	new_item->next = NULL;
 	return (new_item);
 }
@@ -113,10 +103,12 @@ static int	update_existing_item(t_hash_item *item, char *value, int free_old)
 	char	*new_value;
 
 	new_value = ft_strdup(value);
+	if (!new_value)
+		return (HASH_ERR);
 	if (free_old)
 		free(item->value);
 	item->value = new_value;
-	return (SUCCESS);
+	return (HASH_OK);
 }
 
 /**
@@ -148,15 +140,15 @@ int	hashmap_insert(t_hashmap *table, char *key, char *value, int free_old)
 	t_hash_item	*new_item;
 
 	if (!table || !key || !value)
-		return (ERROR);
+		return (HASH_ERR);
 	index = hash_function(key, table->size);
 	existing = find_existing_item(table, key, index);
 	if (existing)
 		return (update_existing_item(existing, value, free_old));
 	new_item = create_new_item(key, value);
 	if (!new_item)
-		return (ERROR);
-	new_item->next = table->item[index];
+		return (HASH_ERR);
+	new_item->next = table->items[index];
 	table->items[index] = new_item;
-	return (SUCCESS);
+	return (HASH_OK);
 }

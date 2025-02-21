@@ -39,19 +39,17 @@ static int	process_env_entry(char *env_str, t_hashmap *env)
 
 	equals_pos = ft_strchr(env_str, '=');
 	if (!equals_pos)
-		return (SUCCESS);
+		return (HASH_OK);
 	key_len = equals_pos - env_str;
 	key = ft_substr(env_str, 0, key_len);
 	value = ft_strdup(equals_pos + 1);
-	if (!key || !value || hashmap_insert(env, key, value, 1) != SUCCESS)
+	if (!key || !value || hashmap_insert(env, key, value, 0) != HASH_OK)
 	{
 		free(key);
 		free(value);
-		return (ERROR);
+		return (HASH_ERR);
 	}
-	free(key);
-	free(value);
-	return (SUCCESS);
+	return (HASH_OK);
 }
 
 /**
@@ -78,10 +76,10 @@ t_hashmap	*env_to_hashtable(char *envp[])
 	t_hashmap	*env;
 	int			i;
 
-	env = hashmap_create_table(128);
+	env = hashmap_create_table(HASH_SIZE);
 	if (!envp || !env)
 	{
-		ft_putendl_fd("Hashing Environment Table Failure!", STERR_FILENO);
+		ft_putendl_fd("Hashing Environment Table Failure!", STDERR_FILENO);
 		return (NULL);
 	}
 	i = 0;
@@ -90,8 +88,8 @@ t_hashmap	*env_to_hashtable(char *envp[])
 		if (process_env_entry(envp[i], env) != 0)
 		{
 			ft_putendl_fd("Process Environement Variable Failure!", \
-				STERR_FILENO);
-			hashmap_destory(env);
+				STDERR_FILENO);
+			hashmap_destroy(env);
 			return (NULL);
 		}
 		i++;

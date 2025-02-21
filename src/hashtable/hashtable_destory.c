@@ -77,12 +77,11 @@ void	hashmap_destroy(t_hashmap *table)
 	if (!table)
 		return ;
 	i = 0;
-	while (i < table->szie)
+	while (i < table->size)
 	{
 		free_item_chain(table->items[i]);
 		i++;
 	}
-	free(table->items[i]);
+	free(table->items);
 	free(table);
-	return ;
 }

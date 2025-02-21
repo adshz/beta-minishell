@@ -13,6 +13,7 @@
 #include "shell.h"
 #include "errors.h"
 #include "hashtable/hashtable.h"
+#include <sys/wait.h>
 
 /**
  * @brief Cleans up resources allocated during shell initialisation
@@ -37,7 +38,7 @@ static void	cleanup_intialisation(t_shell *shell)
 		close(shell->stdout_backup);
 	if (shell->env)
 	{
-		hashmap_destory(shell->env);
+		hashmap_destroy(shell->env);
 		shell->env = NULL;
 	}
 	ft_memset(shell, 0, sizeof(t_shell));
@@ -52,26 +53,27 @@ static void	cleanup_intialisation(t_shell *shell)
  * - Terminal settings for proper signal handling
  *
  * @param shell Pointer to shell structure to initialize
- * @return SUCCESS if all I/O resources initialized properly, ERROR otherwise
+ * @return SHELL_SUCCESS if all I/O resources initialized properly, 
+ * SHELL_ERROR otherwise
  *
  * @note File descriptors are backed up for handling pipes and redirections
  * @note Terminal settings are needed for proper signal handling
  */
-static int	init_io(t_shell *shell)
+int	init_io(t_shell *shell)
 {
 	shell->stdin_backup = dup(STDIN_FILENO);
 	shell->stdout_backup = dup(STDOUT_FILENO);
 	if (shell->stdin_backup == -1 || shell->stdout_backup == -1)
 	{
 		ft_putendl_fd("Failed to backup file descriptors", STDERR_FILENO);
-		return (ERROR);
+		return (SHELL_ERROR);
 	}
 	if (tcgetattr(STDIN_FILENO, &shell->term_settings) == -1)
 	{
 		ft_putendl_fd("Failed to get terminal attributes", STDERR_FILENO);
-		return (ERROR);
+		return (SHELL_ERROR);
 	}
-	return (SUCCESS);
+	return (SHELL_SUCCESS);
 }
 
 /**
@@ -101,13 +103,13 @@ static int	get_shell_pid(t_shell *shell)
 	{
 		ft_putendl_fd("Child Process Fork Failure & Failed to get shell PID", \
 				STDERR_FILENO);
-		return (ERROR);
+		return (SHELL_ERROR);
 	}
 	if (pid == 0)
-		exit(SUCCESS);
+		exit(SHELL_SUCCESS);
 	waitpid(pid, NULL, 0);
 	shell->pid = pid - 1;
-	return (SUCCESS);
+	return (SHELL_SUCCESS);
 }
 
 /**
@@ -126,7 +128,7 @@ static int	get_shell_pid(t_shell *shell)
  * @param shell  Pointer of t_shell type to the shell structure to initailise
  * @param argv   Array of command line arguments
  * @param envp   Array of environment variables (can be NULL)
- * @return SUCCESS OR ERROR
+ * @return SHELL_SUCCESS OR SHELL_ERROR
  *
  * @note If environment initialisation fails, the function exits with ERROR
  * status
@@ -141,14 +143,16 @@ static int	get_shell_pid(t_shell *shell)
 int	init_shell(t_shell *shell, char *argv[], char *envp[])
 {
 	if (!shell)
-		return (ERROR);
+		return (SHELL_ERROR);
 	ft_memset(shell, 0, sizeof(t_shell));
-	if (init_env(shell, envp) == SUCCESS && init_io(shell) == SUCCESS && \
-	get_shell_pid(shell) == SUCCESS)
+	if (init_env(shell, envp) == SHELL_SUCCESS && \
+		init_io(shell) == SHELL_SUCCESS && \
+		get_shell_pid(shell) == SHELL_SUCCESS)
 	{
 		init_env_vars(shell, argv);
-		return (SUCCESS);
+		init_env_cache(shell);
+		return (SHELL_SUCCESS);
 	}
 	cleanup_intialisation(shell);
-	return (ERROR);
+	return (SHELL_ERROR);
 }

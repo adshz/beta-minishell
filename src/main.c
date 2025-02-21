@@ -9,9 +9,19 @@
 /*   Updated: 2025/01/27 16:20:46 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "./shell.h"
+#include "shell.h"
+#include "types.h"
 
-extern int	g_signal;
+/**
+ * @brief Signal handler for handling signals
+ *
+ * This function is used to handle signals in the shell.
+ * It sets the signal status to the signal number.
+ * 
+ * Without extern, each file would create its own separate variable 
+ * instead of using the one defined in main.c
+ */
+volatile sig_atomic_t	g_signal_status = 0;
 
 /**
  * @brief Validates command line arguments for the shell
@@ -30,8 +40,8 @@ static void	validate_args(int argc, char **argv)
 	if (argc > 1)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd("argv[1]", STDERR_FILENO);
-		ft_putendl_fd(": Input Many Arguments Before Program", STERR_FILENO);
+		ft_putstr_fd(argv[1], STDERR_FILENO);
+		ft_putendl_fd(": Input Many Arguments Before Program", STDERR_FILENO);
 		exit(127);
 	}
 }
@@ -61,10 +71,10 @@ int	main(int argc, char *argv[], char **envp)
 	int		exit_status;
 
 	validate_args(argc, argv);
-	if (init_shell(&shell, argv, envp) != SUCCESS)
+	if (init_shell(&shell, argv, envp) != SHELL_SUCCESS)
 	{
 		ft_putendl_fd("Shell Initialisation Failure", STDERR_FILENO);
-		exit(ERROR);
+		exit(SHELL_ERROR);
 	}
 	interactive_loop(&shell);
 	exit_status = shell.exit_status;

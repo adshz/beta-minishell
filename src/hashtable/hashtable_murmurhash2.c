@@ -158,7 +158,7 @@ size_t	hash_function(const char *key, size_t table_size)
 		hash ^= chunk;
 		key++;
 	}
-	finalise_hash(&hash, multiplier);
+	finialise_hash(&hash, multiplier);
 	return (hash % table_size);
 }
 /* Not going to use this because of Norm check failure */

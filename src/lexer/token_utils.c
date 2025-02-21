@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   token_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
+/*   By: evmouka <evmouka@student.42london.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:45:50 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/27 17:58:06 by szhong           ###   ########.fr       */
+/*   Updated: 2025/02/13 20:58:12 by evmouka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "lexer.h"
+#include "lexer/lexer.h"
 
 /**
  * @brief Creates a new token with specified type and value
@@ -43,6 +43,8 @@ t_token	*create_token(t_token_type type, const char *value)
 		return (NULL);
 	}
 	token->next = NULL;
+	token->prev = NULL;
+	token->in_single_quotes = false;
 	return (token);
 }
 
@@ -74,4 +76,26 @@ void	free_tokens(t_token *head)
 		free(current);
 		current = next;
 	}
+}
+
+/**
+ * @brief Advances input pointer past whitespace characters
+ *
+ * Used to prepare input for token extraction by skipping:
+ * - Spaces
+ * - Tabs
+ * - Newlines
+ * - Other whitespace characters
+ *
+ * @param input String to process
+ * @return Pointer to first non-whitespace character
+ *
+ * @note Safe to call with NULL input
+ * @see ft_isspace() for whitespace determination
+ */
+const char	*skip_whitespace(const char *input)
+{
+	while (input && ft_isspace(*input))
+		input++;
+	return (input);
 }

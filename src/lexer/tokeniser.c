@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   tokeniser.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
+/*   By: evmouka <evmouka@student.42london.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 17:09:49 by szhong            #+#    #+#             */
-/*   Updated: 2025/01/27 17:57:54 by szhong           ###   ########.fr       */
+/*   Updated: 2025/02/13 20:57:04 by evmouka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "lexer.h"
+
+#include "lexer/lexer.h"
 
 /**
  * @brief Adds a new token to the end of token list
@@ -25,6 +26,8 @@
  *
  * @note Safe to call with NULL head (creates new list)
  * @note Returns NULL if new_token is NULL
+ * @note Sets new_token->prev to NULL when creating new list
+ * @note Sets new_token->next to NULL for last token in list
  */
 static t_token	*add_token_to_list(t_token *head, t_token *new_token)
 {
@@ -33,11 +36,16 @@ static t_token	*add_token_to_list(t_token *head, t_token *new_token)
 	if (!new_token)
 		return (NULL);
 	if (!head)
+	{
+		new_token->prev = NULL;
 		return (new_token);
+	}
 	current = head;
 	while (current->next)
 		current = current->next;
 	current->next = new_token;
+	new_token->prev = current;
+	new_token->next = NULL;
 	return (head);
 }
 
@@ -60,44 +68,92 @@ static t_token	*add_token_to_list(t_token *head, t_token *new_token)
  */
 static t_token	*process_single_token(const char *input, size_t len)
 {
-	char			*value;
-	t_token			*new_token;
-	t_token_type	*type;
+	t_token	*new_token;
+	char	*value;
+	bool	in_single_quotes;
 
-	value = extract_token(input, len);
+	value = extract_token(input, len, &in_single_quotes);
 	if (!value)
 		return (NULL);
-	type = get_token_type(value);
-	if (type == TOKEN_EOF)
+	if (value[0] == '\0')
 	{
 		free(value);
 		return (NULL);
 	}
-	new_token = create_token(type, value);
+	new_token = create_token(get_token_type(value), value);
+	if (!new_token)
+	{
+		free(value);
+		return (NULL);
+	}
+	new_token->in_single_quotes = in_single_quotes;
 	free(value);
 	return (new_token);
 }
 
 /**
- * @brief Advances input pointer past whitespace characters
+ * @brief Creates and adds a new token to the token list
  *
- * Used to prepare input for token extraction by skipping:
- * - Spaces
- * - Tabs
- * - Newlines
- * - Other whitespace characters
+ * Handles the token creation process by:
+ * 1. Creating a new token from input
+ * 2. Adding it to the existing token list
+ * 3. Managing memory cleanup on failures
  *
- * @param input String to process
- * @return Pointer to first non-whitespace character
+ * @param input Input string to process
+ * @param len   Length of token to extract
+ * @param head  Current head of token list
+ * @return Updated head of token list, or NULL on failure
  *
- * @note Safe to call with NULL input
- * @see ft_isspace() for whitespace determination
+ * @note Frees existing token list on process_single_token failure
+ * @note Frees new token on add_token_to_list failure
+ * @see process_single_token() for token creation
+ * @see add_token_to_list() for list management
  */
-static const char	*skip_whitespace(const char *input)
+static t_token	*handle_token_creation(const char *input,
+			size_t len, t_token *head)
 {
-	while (input && ft_isspace(*input))
-		input++;
-	return (input);
+	t_token	*new_token;
+
+	new_token = process_single_token(input, len);
+	if (!new_token)
+	{
+		free_tokens(head);
+		return (NULL);
+	}
+	head = add_token_to_list(head, new_token);
+	if (!head)
+	{
+		free_tokens(new_token);
+		return (NULL);
+	}
+	return (head);
+}
+
+/**
+ * @brief Process input string and build token list
+ *
+ * @param input Input string to process
+ * @param head Current head of token list
+ * @return Updated head of token list, or NULL on failure
+ */
+static t_token	*process_input_tokens(const char *input, t_token *head)
+{
+	size_t	len;
+
+	while (*input)
+	{
+		input = skip_whitespace(input);
+		if (!*input)
+			break ;
+		len = get_token_length_with_state(input);
+		if (len == 0)
+			break ;
+		head = handle_token_creation(input, len, head);
+		if (!head)
+			return (NULL);
+		input += len;
+	}
+	return (head);
 }
 
 /**
@@ -106,7 +162,7 @@ static const char	*skip_whitespace(const char *input)
  * Main tokenization process:
  * 1. Skips whitespace
  * 2. Determines token length
- * 3. Processes individual tokens
+ * 3. Processes individual tokens via handle_token_creation
  * 4. Builds token list
  *
  * Used by the parser to break command line into processable tokens
@@ -117,6 +173,7 @@ static const char	*skip_whitespace(const char *input)
  *
  * @note Handles memory cleanup on any failure
  * @note Returns NULL for empty input
+ * @see handle_token_creation() for token creation and list management
  * @see process_single_token() for individual token creation
  * @see add_token_to_list() for list building
  *
@@ -127,28 +184,9 @@ static const char	*skip_whitespace(const char *input)
 t_token	*tokenise(const char *input)
 {
 	t_token	*head;
-	t_token	*new_token;
-	size_t	len;
 
+	if (!input)
+		return (NULL);
 	head = NULL;
-	while (input && *input)
-	{
-		input = skip_whitespace(input);
-		if (!*input)
-			break ;
-		len = get_token_length_with_state(input);
-		if (len == 0)
-			break ;
-		new_token = process_single_token(input, len);
-		if (!new_token)
-		{
-			free_tokens(head);
-			return (NULL);
-		}
-		head = add_token_to_list(head, new_token);
-		if (!head)
-			return (NULL);
-		input += len;
-	}
-	return (head);
+	return (process_input_tokens(input, head));
 }

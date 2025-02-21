@@ -42,10 +42,11 @@ static void	init_shlvl(t_shell *shell)
 	tmp = ft_itoa(shlvl);
 	if (!tmp)
 	{
-		handle_error(shell, ERR_ENV, "Environment variable SHLVL failure");
+		handle_error(shell, ERROR_ENV, "Environment variable SHLVL failure");
 		return ;
 	}
 	hashmap_insert(shell->env, "SHLVL", tmp, 0);
+	mark_env_modified(shell);
 	free(tmp);
 }
 
@@ -77,10 +78,12 @@ static void	init_pwd(t_shell *shell)
 		tmp = getcwd(NULL, 0);
 		if (!tmp)
 		{
-			handle_error(shell, ERR_NOT_FOUND, "Current Directory Not Found");
+			handle_error(shell, ERROR_PWD_ACCESS, \
+				"Cannot determine current working directory");
 			return ;
 		}
 		hashmap_insert(shell->env, "PWD", tmp, 0);
+		mark_env_modified(shell);
 		free(tmp);
 	}
 }
@@ -111,10 +114,9 @@ int	init_env(t_shell *shell, char *envp[])
 	else
 		shell->env = env_to_hashtable(envp);
 	if (shell->env)
-		return (SUCCESS);
-	ft_putendl_fd("Environment variable initialisation failure", \
-			STDERROR_FILENO);
-	return (ERROR);
+		return (SHELL_SUCCESS);
+	ft_putendl_fd("Environment variable initialisation failure", STDERR_FILENO);
+	return (SHELL_ERROR);
 }
 
 /**
@@ -155,10 +157,15 @@ void	init_env_vars(t_shell *shell, char *argv[])
 	if (!hashmap_search(shell->env, "PATH"))
 	{
 		hashmap_insert(shell->env, "PATH", \
-				"/usr/local/sbin:/usr/local/bin:/usr/bin:/bin", 0);
+				"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin", 0);
+		mark_env_modified(shell);
 		return ;
 	}
 	if (!hashmap_search(shell->env, "_"))
+	{
 		hashmap_insert(shell->env, "_", argv[0], 0);
+		mark_env_modified(shell);
+	}
 	hashmap_remove(shell->env, "OLDPWD");
+	mark_env_modified(shell);
 }

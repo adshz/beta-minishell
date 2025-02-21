@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "lexer.h"
-
+#include "shell.h"
 /**
  * @brief Checks if character is a shell special character
  *
@@ -45,17 +45,17 @@ int	is_special_char(char c)
  * @note Safe to call with NULL or empty string
  * @note Only checks for two-character operators
  */
-static int	is_operator(const char *str)
+int	is_operator(const char *str)
 {
 	if (!str || !*str)
 		return (0);
-	if (ft_strcmp(str, "||", 2) == 0)
+	if (ft_strncmp(str, "||", 2) == 0)
 		return (1);
-	if (ft_strcmp(str, "&&", 2) == 0)
+	if (ft_strncmp(str, "&&", 2) == 0)
 		return (1);
-	if (ft_strcmp(str, "<<", 2) == 0)
+	if (ft_strncmp(str, "<<", 2) == 0)
 		return (1);
-	if (ft_strcmp(str, ">>", 2) == 0)
+	if (ft_strncmp(str, ">>", 2) == 0)
 		return (1);
 	return (0);
 }
@@ -91,12 +91,12 @@ t_token_type	get_token_type(const char *value)
 	if (ft_strcmp(value, ">") == 0)
 		return (TOKEN_REDIRECT_OUT);
 	if (ft_strcmp(value, ">>") == 0)
-		return (TOKEN_REDIRECT_APPEND);
+		return (TOKEN_APPEND);
 	if (ft_strcmp(value, "<<") == 0)
 		return (TOKEN_HEREDOC);
-	if (ft_strcmp(value, "&&") == 0)
+	if (ft_strncmp(value, "&&", 2) == 0)
 		return (TOKEN_AND);
-	if (ft_strcmp(value, "||") == 0)
+	if (ft_strncmp(value, "||", 2) == 0)
 		return (TOKEN_OR);
 	return (TOKEN_WORD);
 }
