@@ -35,7 +35,6 @@ static void	cleanup_environment_resources(t_shell *shell)
 		hashmap_destroy(shell->env);
 		shell->env = NULL;
 	}
-	ft_hash_memory_collector(NULL, true);
 }
 
 static void	cleanup_history_resources(t_shell *shell)

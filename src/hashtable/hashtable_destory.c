@@ -84,4 +84,5 @@ void	hashmap_destroy(t_hashmap *table)
 	}
 	free(table->items);
 	free(table);
+	ft_hash_memory_collector(NULL, true);
 }
