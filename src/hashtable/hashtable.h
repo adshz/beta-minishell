@@ -19,7 +19,7 @@
 
 # include "libft.h"
 # include <stdlib.h>
-# include "memory_collector.h"
+# include "memory_collector/memory_collector.h"
 # include "hashtable/hashtable_types.h"
 
 /* Hash Table - Hash Item Structure */
