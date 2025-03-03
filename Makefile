@@ -33,6 +33,7 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				memory_collector/heredoc_memory_collector.c \
 				memory_collector/memory_collector.c \
 				memory_collector/memory_deleter.c \
 				executor/command_executor/command_executor_external_cmd.c \

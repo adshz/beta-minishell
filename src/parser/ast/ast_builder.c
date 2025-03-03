@@ -14,6 +14,7 @@
 t_ast_node	*create_ast_node(t_ast_type type, char *value)
 {
 	t_ast_node	*node;
+	char		*tracked_value;
 
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
@@ -30,7 +31,16 @@ t_ast_node	*create_ast_node(t_ast_type type, char *value)
 	node->data.delimiter = NULL;
 	if (value)
 	{
-		node->value = ft_strdup(value);
+		tracked_value = ft_strdup(value);
+		if (!tracked_value)
+		{
+			free(node);
+			return (NULL);
+		}
+		if (type == AST_HEREDOC)
+			node->value = ft_heredoc_memory_collector(tracked_value, false);
+		else
+			node->value = tracked_value;
 		if (!node->value)
 		{
 			free(node);

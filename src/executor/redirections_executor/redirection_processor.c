@@ -104,9 +104,13 @@ void	setup_redirections(t_shell *shell, t_ast_node *node)
 		return ;
 	}
 	if (process_heredoc_nodes(shell, redir_nodes, redir_count, saved_fds) != 0)
+	{
+		cleanup_saved_fds(saved_fds[0], saved_fds[1]);
 		return ;
+	}
 	if (process_other_redirections(shell, redir_nodes, \
 							redir_count, saved_fds) != 0)
 		return ;
+	cleanup_saved_fds(saved_fds[0], saved_fds[1]);
 	shell->exit_status = 0;
 }

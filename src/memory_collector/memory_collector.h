@@ -21,4 +21,6 @@ void	ft_delete_mem(void *ptr);
 void	*ft_memory_delone(t_shell *shell, void *ptr);
 void	*ft_memory_collector(t_shell *shell, void *ptr, bool clean_flag);
 void	*ft_hash_memory_collector(void *ptr, bool clean_flag);
+void	*ft_heredoc_memory_collector(void *ptr, bool clean_flag);
+void	*ft_heredoc_memory_delone(void *ptr);
 #endif

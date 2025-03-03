@@ -52,14 +52,18 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 
 int	setup_heredoc_pipe(t_ast_node *node)
 {
+	int	old_fd;
+
 	if (!node || node->data.content_fd < 0)
 		return (print_error("heredoc", "invalid file descriptor", 1));
-	if (dup2(node->data.content_fd, STDIN_FILENO) == -1)
+	old_fd = node->data.content_fd;
+	if (dup2(old_fd, STDIN_FILENO) == -1)
 	{
-		close(node->data.content_fd);
+		close(old_fd);
 		return (print_error("heredoc", "dup2 failed", 1));
 	}
-	close(node->data.content_fd);
+	close(old_fd);
+	node->data.content_fd = -1; 
 	return (0);
 }
 

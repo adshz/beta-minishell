@@ -34,23 +34,23 @@ static void	free_redir_node_content(t_ast_node *current)
 	if (current->right)
 	{
 		if (current->right->value)
-			free(current->right->value);
+			ft_heredoc_memory_collector(NULL, true);
 		if (current->right->args)
 			ft_free_array(current->right->args);
 		if (current->right->original)
-			free(current->right->original);
+			ft_heredoc_memory_collector(NULL, true);
 		free(current->right);
 	}
 	if (current->value)
-		free(current->value);
+		ft_heredoc_memory_collector(NULL, true);
 	if (current->args)
 		ft_free_array(current->args);
 	if (current->data.content_path)
-		free(current->data.content_path);
+		ft_heredoc_memory_collector(NULL, true);
 	if (current->original)
-		free(current->original);
+		ft_heredoc_memory_collector(NULL, true);
 	if (current->data.delimiter)
-		free((char *)current->data.delimiter);
+		ft_heredoc_memory_collector(NULL, true);
 }
 
 t_ast_node	*cleanup_heredoc_nodes(t_ast_node *first_redir, \
