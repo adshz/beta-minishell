@@ -28,6 +28,8 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 		ret = handle_heredoc_line(line, pipe_fds, node, shell);
 		if (ret != 0)
 		{
+			close(pipe_fds[0]);
+			close(pipe_fds[1]);
 			shell->in_heredoc = 0;
 			g_signal_status = SIG_NONE;
 			return (ret);
@@ -36,6 +38,7 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 			break ;
 	}
 	node->data.content_fd = pipe_fds[0];
+	close(pipe_fds[1]);  // Close write end after we're done
 	shell->in_heredoc = 0;
 	g_signal_status = SIG_NONE;
 	return (0);
