@@ -30,11 +30,6 @@ void	cleanup_process_state(t_shell *shell)
 	char	**tmp;
 
 	tmp = NULL;
-	if (shell->pids)
-	{
-		free(shell->pids);
-		shell->pids = NULL;
-	}
 	if (shell->old_pwd)
 	{
 		free(shell->old_pwd);

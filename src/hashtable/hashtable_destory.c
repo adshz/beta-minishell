@@ -41,8 +41,7 @@ static void	free_item_chain(t_hash_item *item)
 	while (item)
 	{
 		next = item->next;
-		free(item->key);
-		free(item->value);
+		// key and value are freed by the memory collector
 		free(item);
 		item = next;
 	}
@@ -68,6 +67,7 @@ static void	free_item_chain(t_hash_item *item)
  * @param table The hash table to destroy (can be NULL)
  *
  * @note Safe to pass NULL table
+ * @note String memory (keys and values) is managed by the memory collector
  * @see free_item_chain() Frees individual chains regarding the index
  */
 void	hashmap_destroy(t_hashmap *table)
