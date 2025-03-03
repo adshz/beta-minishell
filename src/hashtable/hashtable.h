@@ -19,6 +19,8 @@
 
 # include "libft.h"
 # include <stdlib.h>
+# include "memory_collector.h"
+# include "hashtable/hashtable_types.h"
 
 /* Hash Table - Hash Item Structure */
 /**
@@ -119,7 +121,6 @@ char		*hashmap_search(t_hashmap *table, char *key);
 void		hashmap_iterate(t_hashmap *table, \
 					void (*f)(const char *, const char *));
 void		hashmap_set(t_hashmap *table, const char *key, const char *value);
-void		hashmap_destroy(t_hashmap *table);
 void		hashmap_handle_collision(t_hashmap *table, size_t index, \
 							t_hash_item *new_item);
 size_t		hashmap_size(t_hashmap *table);

@@ -18,7 +18,7 @@
 # include <sys/types.h>
 # include "libft.h"
 # include "lexer/lexer.h"
-# include "hashtable/hashtable.h"
+# include "hashtable/hashtable_types.h"
 
 # define SIG_HEREDOC_MODE 1
 # define SIG_HEREDOC_INT 2
