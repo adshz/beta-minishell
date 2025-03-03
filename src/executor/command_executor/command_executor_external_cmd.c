@@ -41,6 +41,14 @@ static void	extern_cleanup_resources(char *cmd_path, char **env_array)
 		ft_free_array(env_array);
 }
 
+static void	cleanup_and_exit(t_shell *shell, int status)
+{
+	cleanup_shell(shell);
+	ft_heredoc_memory_collector(NULL, true);
+	ft_hash_memory_collector(NULL, true);
+	exit(status);
+}
+
 int	execute_external_command(t_shell *shell, t_ast_node *node)
 {
 	pid_t	pid;
@@ -66,9 +74,7 @@ int	execute_external_command(t_shell *shell, t_ast_node *node)
 		extern_cleanup_resources(cmd_path, env_array);
 		cleanup_current_command(shell);
 		cleanup_env_cache(shell);
-		ft_heredoc_memory_collector(NULL, true);
-		ft_hash_memory_collector(NULL, true);
-		exit(ret);
+		cleanup_and_exit(shell, ret);
 	}
 	extern_cleanup_resources(cmd_path, env_array);
 	return (handle_external_parent_process(pid));

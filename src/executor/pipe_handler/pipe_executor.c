@@ -12,6 +12,16 @@
 #include "executor/executor.h"
 #include "parser/parser.h"
 
+static void	cleanup_child_process(t_shell *shell)
+{
+	cleanup_current_command(shell);
+	cleanup_env_cache(shell);
+	close(shell->stdin_backup);
+	close(shell->stdout_backup);
+	ft_heredoc_memory_collector(NULL, true);
+	ft_hash_memory_collector(NULL, true);
+}
+
 static int	execute_pipe_left_child(t_shell *shell, t_ast_node *node, \
 								int pipe_fd[2])
 {
@@ -21,9 +31,7 @@ static int	execute_pipe_left_child(t_shell *shell, t_ast_node *node, \
 	if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
 	{
 		perror("minishell: dup2");
-		cleanup_current_command(shell);
-		ft_heredoc_memory_collector(NULL, true);
-		ft_hash_memory_collector(NULL, true);
+		cleanup_child_process(shell);
 		exit(1);
 	}
 	close(pipe_fd[1]);
@@ -33,12 +41,7 @@ static int	execute_pipe_left_child(t_shell *shell, t_ast_node *node, \
 		ret = execute_pipe(shell, node->left);
 	else
 		ret = execute_ast(shell, node->left);
-	cleanup_current_command(shell);
-	cleanup_env_cache(shell);
-	close(shell->stdin_backup);
-	close(shell->stdout_backup);
-	ft_heredoc_memory_collector(NULL, true);
-	ft_hash_memory_collector(NULL, true);
+	cleanup_child_process(shell);
 	exit(ret);
 }
 
@@ -51,22 +54,14 @@ static int	execute_pipe_right_child(t_shell *shell, t_ast_node *node, \
 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
 	{
 		perror("minishell: dup2");
-		cleanup_current_command(shell);
-		cleanup_env_cache(shell);
-		ft_heredoc_memory_collector(NULL, true);
-		ft_hash_memory_collector(NULL, true);
+		cleanup_child_process(shell);
 		exit(1);
 	}
 	close(pipe_fd[0]);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	ret = execute_ast(shell, node->right);
-	cleanup_current_command(shell);
-	cleanup_env_cache(shell);
-	close(shell->stdin_backup);
-	close(shell->stdout_backup);
-	ft_heredoc_memory_collector(NULL, true);
-	ft_hash_memory_collector(NULL, true);
+	cleanup_child_process(shell);
 	exit(ret);
 }
 

@@ -80,5 +80,7 @@ int	main(int argc, char *argv[], char **envp)
 	exit_status = shell.exit_status;
 	rl_clear_history();
 	cleanup_shell(&shell);
+	ft_heredoc_memory_collector(NULL, true);
+	ft_hash_memory_collector(NULL, true);
 	return (exit_status);
 }
