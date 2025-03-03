@@ -28,6 +28,7 @@
 # include <sys/wait.h>
 
 /* High-level orchestration functions */
+void	cleanup_saved_fds(int saved_stdin, int saved_stdout);
 void	restore_redirections(t_shell *shell);
 void	add_command_history(t_shell *shell, void *ast);
 int		handle_node_by_type(t_shell *shell, t_ast_node *node);
