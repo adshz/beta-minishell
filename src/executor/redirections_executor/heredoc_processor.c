@@ -37,6 +37,7 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 			cleanup_saved_fds(saved_stdin, saved_stdout);
 			shell->in_heredoc = 0;
 			g_signal_status = SIG_NONE;
+			ft_heredoc_memory_collector(NULL, true);
 			return (ret);
 		}
 		if (write_heredoc_line(line, pipe_fds, node))
@@ -55,15 +56,19 @@ int	setup_heredoc_pipe(t_ast_node *node)
 	int	old_fd;
 
 	if (!node || node->data.content_fd < 0)
+	{
+		ft_heredoc_memory_collector(NULL, true);
 		return (print_error("heredoc", "invalid file descriptor", 1));
+	}
 	old_fd = node->data.content_fd;
 	if (dup2(old_fd, STDIN_FILENO) == -1)
 	{
 		close(old_fd);
+		ft_heredoc_memory_collector(NULL, true); 
 		return (print_error("heredoc", "dup2 failed", 1));
 	}
 	close(old_fd);
-	node->data.content_fd = -1; 
+	node->data.content_fd = -1;
 	return (0);
 }
 

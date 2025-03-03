@@ -40,12 +40,14 @@ static int	handle_heredoc_interrupt(char *line, int pipe_fds[2],
 		node->data.content_fd = -1;
 		if (line)
 			free(line);
+		ft_heredoc_memory_collector(NULL, true);
 		return (130);
 	}
 	if (line)
 		free(line);
 	node->data.content_fd = -1;
 	write(STDERR_FILENO, "\n", 1);
+	ft_heredoc_memory_collector(NULL, true);
 	return (1);
 }
 
