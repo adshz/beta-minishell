@@ -11,15 +11,6 @@
 /* ************************************************************************** */
 #include "hashtable.h"
 
-static void	free_hashitem(t_hash_item *item)
-{
-	if (!item || !item->is_tracked)
-		return ;
-	item->key = NULL;
-	item->value = NULL;
-	item->next = NULL;
-}
-
 /**
  * @brief Removes an item from the hash table by key
  *
