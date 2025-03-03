@@ -38,7 +38,10 @@ t_ast_node	*create_ast_node(t_ast_type type, char *value)
 			return (NULL);
 		}
 		if (type == AST_HEREDOC)
+		{
 			node->value = ft_heredoc_memory_collector(tracked_value, false);
+			node = ft_heredoc_memory_collector(node, false);
+		}
 		else
 			node->value = tracked_value;
 		if (!node->value)
@@ -47,6 +50,8 @@ t_ast_node	*create_ast_node(t_ast_type type, char *value)
 			return (NULL);
 		}
 	}
+	else if (type == AST_HEREDOC)
+		node = ft_heredoc_memory_collector(node, false);
 	return (node);
 }
 

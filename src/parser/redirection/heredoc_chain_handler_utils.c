@@ -69,7 +69,8 @@ t_ast_node	*cleanup_heredoc_nodes(t_ast_node *first_redir, \
 		{
 			next = current->left;
 			free_redir_node_content(current);
-			free(current);
+			if (current->type != AST_HEREDOC)
+				free(current);
 			current = next;
 		}
 	}
