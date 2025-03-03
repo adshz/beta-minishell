@@ -80,6 +80,7 @@ typedef t_hash_item			t_env;
 */
 typedef struct s_shell
 {
+	t_list		*mem_list;
 	char			*line;
 	t_token			*tokens;
 	t_ast_node		*ast;
