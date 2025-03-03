@@ -30,8 +30,9 @@ static t_ast_node	*init_heredoc_data(t_ast_node *redir_node, \
 		free(redir_node);
 		return (NULL);
 	}
-	delimiter = ft_hash_memory_collector(delimiter, false);
+	delimiter = ft_heredoc_memory_collector(delimiter, false);
 	redir_node->data.delimiter = delimiter;
+	redir_node = ft_heredoc_memory_collector(redir_node, false);
 	return (redir_node);
 }
 
