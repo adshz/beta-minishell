@@ -13,9 +13,13 @@
 
 static void	free_hashitem(t_hash_item *item)
 {
-	if (!item || item->is_tracked)
-		return ; 
-	free(item);
+	if (!item || !item->is_tracked)
+		return ;
+	// Mark item as freed by nulling its pointers
+	item->key = NULL;
+	item->value = NULL;
+	item->next = NULL;
+	// Don't free here, let memory collector handle it
 }
 
 /**

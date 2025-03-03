@@ -13,6 +13,13 @@
 
 void	ft_delete_mem(void *ptr)
 {
+	t_hash_item *item;
+
+	if (!ptr)
+		return ;
+	item = (t_hash_item *)ptr;
+	if (item->is_tracked && item->key == NULL && item->value == NULL)
+		return ;
 	free(ptr);
 	ptr = NULL;
 }
