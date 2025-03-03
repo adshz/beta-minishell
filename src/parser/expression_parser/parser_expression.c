@@ -65,12 +65,84 @@ static bool	expand_variable_in_token(t_token *token, t_shell *shell)
 	return (handle_token_expansion(token, shell));
 }
 
+static t_ast_node	*create_logical_node(t_ast_node *left, t_token *op_token, t_token **tokens, t_shell *shell)
+{
+	t_ast_node	*node;
+	t_ast_node	*right;
+
+	node = create_ast_node(get_ast_type(op_token->type), NULL);
+	if (!node)
+	{
+		free_ast(left);
+		return (NULL);
+	}
+	*tokens = op_token->next;
+	if (op_token->type == TOKEN_OR)
+		right = parse_and_expression(tokens, shell);
+	else if (op_token->type == TOKEN_AND)
+		right = parse_pipeline(tokens, shell);
+	else
+	{
+		free_ast(left);
+		free_ast(node);
+		return (NULL);
+	}
+	if (!right)
+	{
+		free_ast(left);
+		free_ast(node);
+		return (NULL);
+	}
+	node->left = left;
+	node->right = right;
+	return (node);
+}
+
+static t_ast_node	*parse_and_expression(t_token **tokens, t_shell *shell);
+
+static t_ast_node	*parse_or_expression(t_token **tokens, t_shell *shell)
+{
+	t_ast_node	*node;
+	t_token		*current;
+
+	node = parse_and_expression(tokens, shell);
+	if (!node)
+		return (NULL);
+	current = *tokens;
+	while (current && current->type == TOKEN_OR)
+	{
+		node = create_logical_node(node, current, tokens, shell);
+		if (!node)
+			return (NULL);
+		current = *tokens;
+	}
+	return (node);
+}
+
+static t_ast_node	*parse_and_expression(t_token **tokens, t_shell *shell)
+{
+	t_ast_node	*node;
+	t_token		*current;
+
+	node = parse_pipeline(tokens, shell);
+	if (!node)
+		return (NULL);
+	current = *tokens;
+	while (current && current->type == TOKEN_AND)
+	{
+		node = create_logical_node(node, current, tokens, shell);
+		if (!node)
+			return (NULL);
+		current = *tokens;
+	}
+	return (node);
+}
+
 static t_ast_node	*build_expression_tree(t_token **tokens, t_shell *shell)
 {
 	t_ast_node	*node;
 
-	node = NULL;
-	node = parse_pipeline(tokens, shell);
+	node = parse_or_expression(tokens, shell);
 	if (!node)
 		return (NULL);
 	if (*tokens && (*tokens)->type == TOKEN_REDIRECT_IN)
