@@ -34,23 +34,26 @@ static void	free_redir_node_content(t_ast_node *current)
 	if (current->right)
 	{
 		if (current->right->value)
-			ft_heredoc_memory_collector(NULL, true);
+			ft_heredoc_memory_delone(current->right->value);
 		if (current->right->args)
 			ft_free_array(current->right->args);
 		if (current->right->original)
-			ft_heredoc_memory_collector(NULL, true);
-		free(current->right);
+			ft_heredoc_memory_delone(current->right->original);
+		if (current->right->type == AST_HEREDOC)
+			ft_heredoc_memory_delone(current->right);
+		else
+			free(current->right);
 	}
 	if (current->value)
-		ft_heredoc_memory_collector(NULL, true);
+		ft_heredoc_memory_delone(current->value);
 	if (current->args)
 		ft_free_array(current->args);
 	if (current->data.content_path)
-		ft_heredoc_memory_collector(NULL, true);
+		ft_heredoc_memory_delone(current->data.content_path);
 	if (current->original)
-		ft_heredoc_memory_collector(NULL, true);
+		ft_heredoc_memory_delone(current->original);
 	if (current->data.delimiter)
-		ft_heredoc_memory_collector(NULL, true);
+		ft_heredoc_memory_delone((void *)current->data.delimiter);
 }
 
 t_ast_node	*cleanup_heredoc_nodes(t_ast_node *first_redir, \
@@ -69,7 +72,9 @@ t_ast_node	*cleanup_heredoc_nodes(t_ast_node *first_redir, \
 		{
 			next = current->left;
 			free_redir_node_content(current);
-			if (current->type != AST_HEREDOC)
+			if (current->type == AST_HEREDOC)
+				ft_heredoc_memory_delone(current);
+			else
 				free(current);
 			current = next;
 		}
