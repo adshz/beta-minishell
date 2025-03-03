@@ -18,7 +18,7 @@
  * - Computes hash index for the key
  * - Traverses the chain at that index
  * - Updates pointers to maintain chain integrity
- * - Frees the removed item
+ * - Unlinks the item (memory is managed by collector)
  *
  * @param table Hash table to remove from
  * @param key   Key of the item to remove
@@ -26,6 +26,7 @@
  * @note Safe to call with NULL table or key
  * @note If key doesn't exist, function silently returns
  * @note Updates chain pointers to maintain linked list structure
+ * @note Memory is managed by the hash memory collector
  */
 void	hashmap_remove(t_hashmap *table, const char *key)
 {
