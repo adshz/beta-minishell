@@ -80,6 +80,5 @@ void	hashmap_destroy(t_hashmap *table)
 		free_item_chain(table->items[i]);
 		i++;
 	}
-	free(table);
 	ft_hash_memory_collector(NULL, true);
 }

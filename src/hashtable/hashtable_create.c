@@ -30,12 +30,13 @@ t_hashmap	*hashmap_create_table(size_t size)
 	table = malloc(sizeof(t_hashmap));
 	if (!table)
 		return (NULL);
+	table = ft_hash_memory_collector(table, false);
 	table->size = size;
 	table->count = 0;
 	table->items = ft_calloc(size, sizeof(t_hash_item *));
 	if (!table->items)
 	{
-		free(table);
+		ft_hash_memory_collector(table, true);
 		return (NULL);
 	}
 	table->items = ft_hash_memory_collector(table->items, false);
