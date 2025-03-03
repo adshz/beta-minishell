@@ -87,8 +87,6 @@ typedef struct s_shell
 	char			**env_array;
 	bool			env_modified;
 	t_list			*cmds;
-	pid_t			pid;
-	pid_t			*pids;
 	char			*old_pwd;
 	char			**history;
 	int				exit_status;

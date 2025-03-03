@@ -77,42 +77,6 @@ int	init_io(t_shell *shell)
 }
 
 /**
- * @brief Gets the shell's process ID using fork technique
- *
- * This function determines the shell's PID by using a fork() trick;
- * 1. Creates a child process using fork()
- * 2. Child process exits immediately
- * 3. Parent process waits for child to exit
- * 4. Parent process calculates its PID using child's PID
- *
- * The calculation works because
- *  - fork() returns child's PID to parent
- *  - Child PIDs are typically parent's PID + 1
- *  - Therefore parent's PID = child's PID -1
- *
- * @param shell Pointer to the shell structure to store PID
- *
- * @note Exits program if fork fails;
- */
-static int	get_shell_pid(t_shell *shell)
-{
-	pid_t	pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		ft_putendl_fd("Child Process Fork Failure & Failed to get shell PID", \
-				STDERR_FILENO);
-		return (SHELL_ERROR);
-	}
-	if (pid == 0)
-		exit(SHELL_SUCCESS);
-	waitpid(pid, NULL, 0);
-	shell->pid = pid - 1;
-	return (SHELL_SUCCESS);
-}
-
-/**
  * @brief Initialises the shell structure and its environement
  *
  * This function performs the complete initialisation of the shell structure:
@@ -146,8 +110,7 @@ int	init_shell(t_shell *shell, char *argv[], char *envp[])
 		return (SHELL_ERROR);
 	ft_memset(shell, 0, sizeof(t_shell));
 	if (init_env(shell, envp) == SHELL_SUCCESS && \
-		init_io(shell) == SHELL_SUCCESS && \
-		get_shell_pid(shell) == SHELL_SUCCESS)
+		init_io(shell) == SHELL_SUCCESS)
 	{
 		init_env_vars(shell, argv);
 		init_env_cache(shell);

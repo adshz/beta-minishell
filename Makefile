@@ -33,6 +33,8 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				memory_collector\memory_collector.c \
+				memory_deleter.c \
 				executor/command_executor/command_executor_external_cmd.c \
 				executor/env_executor/env_array_manager.c \
 				utils/astnode_cleanup.c \
