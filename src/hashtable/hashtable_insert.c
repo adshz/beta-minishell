@@ -37,6 +37,7 @@ static t_hash_item	*create_new_item(char *key, char *value)
 	new_item->key = key;
 	new_item->value = value;
 	new_item->next = NULL;
+	new_item->is_tracked = true;
 	return (new_item);
 }
 

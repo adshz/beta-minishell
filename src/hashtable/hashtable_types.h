@@ -17,6 +17,7 @@ typedef struct s_hash_item
 	char				*key;
 	char				*value;
 	struct s_hash_item	*next;
+	bool				is_tracked;
 }	t_hash_item;
 
 /* Hash Table Structure */

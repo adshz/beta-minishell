@@ -11,6 +11,13 @@
 /* ************************************************************************** */
 #include "hashtable.h"
 
+static void	free_hashitem(t_hash_item *item)
+{
+	if (!item || item->is_tracked)
+		return ; 
+	free(item);
+}
+
 /**
  * @brief Removes an item from the hash table by key
  *
@@ -47,6 +54,7 @@ void	hashmap_remove(t_hashmap *table, const char *key)
 				prev->next = current->next;
 			else
 				table->items[idx] = current->next;
+			free_hashitem(current);
 			return ;
 		}
 		prev = current;
