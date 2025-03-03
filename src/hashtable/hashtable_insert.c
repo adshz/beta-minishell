@@ -33,6 +33,7 @@ static t_hash_item	*create_new_item(char *key, char *value)
 	new_item = (t_hash_item *)malloc(sizeof(t_hash_item));
 	if (!new_item)
 		return (NULL);
+	new_item = ft_hash_memory_collector(new_item, false);
 	new_item->key = key;
 	new_item->value = value;
 	new_item->next = NULL;

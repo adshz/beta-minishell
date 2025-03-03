@@ -38,6 +38,7 @@ t_hashmap	*hashmap_create_table(size_t size)
 		free(table);
 		return (NULL);
 	}
+	table->items = ft_hash_memory_collector(table->items, false);
 	return (table);
 }
 

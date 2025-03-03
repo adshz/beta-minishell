@@ -41,8 +41,6 @@ static void	free_item_chain(t_hash_item *item)
 	while (item)
 	{
 		next = item->next;
-		// key and value are freed by the memory collector
-		free(item);
 		item = next;
 	}
 }
@@ -82,7 +80,6 @@ void	hashmap_destroy(t_hashmap *table)
 		free_item_chain(table->items[i]);
 		i++;
 	}
-	free(table->items);
 	free(table);
 	ft_hash_memory_collector(NULL, true);
 }
