@@ -65,8 +65,8 @@ static char	**get_path_directories(t_hashmap *env)
 	char	**paths;
 
 	path_var = hashmap_get(env, "PATH");
-	if (!path_var || !*path_var)
-		path_var = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+	if (!path_var)
+		return (NULL);
 	paths = ft_split(path_var, ':');
 	if (!paths)
 		return (NULL);
