@@ -38,6 +38,30 @@ static int	handle_pipe(t_shell *shell, t_ast_node *node)
 	return (ret);
 }
 
+static int	handle_logical_operator(t_shell *shell, t_ast_node *node)
+{
+	int	left_ret;
+	int	right_ret;
+
+	left_ret = execute_ast(shell, node->left);
+	if (node->type == AST_AND)
+	{
+		if (left_ret == 0)
+			right_ret = execute_ast(shell, node->right);
+		else
+			right_ret = left_ret;
+	}
+	else // AST_OR
+	{
+		if (left_ret != 0)
+			right_ret = execute_ast(shell, node->right);
+		else
+			right_ret = left_ret;
+	}
+	shell->exit_status = right_ret;
+	return (right_ret);
+}
+
 int	handle_node_by_type(t_shell *shell, t_ast_node *node)
 {
 	if (AST_VAR_EXPANSION == node->type)
@@ -46,6 +70,8 @@ int	handle_node_by_type(t_shell *shell, t_ast_node *node)
 		return (handle_command(shell, node));
 	if (AST_PIPE == node->type)
 		return (handle_pipe(shell, node));
+	if (AST_AND == node->type || AST_OR == node->type)
+		return (handle_logical_operator(shell, node));
 	return (-1);
 }
 
