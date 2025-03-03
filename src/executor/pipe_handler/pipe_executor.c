@@ -22,6 +22,8 @@ static int	execute_pipe_left_child(t_shell *shell, t_ast_node *node, \
 	{
 		perror("minishell: dup2");
 		cleanup_current_command(shell);
+		ft_heredoc_memory_collector(NULL, true);
+		ft_hash_memory_collector(NULL, true);
 		exit(1);
 	}
 	close(pipe_fd[1]);
@@ -35,6 +37,8 @@ static int	execute_pipe_left_child(t_shell *shell, t_ast_node *node, \
 	cleanup_env_cache(shell);
 	close(shell->stdin_backup);
 	close(shell->stdout_backup);
+	ft_heredoc_memory_collector(NULL, true);
+	ft_hash_memory_collector(NULL, true);
 	exit(ret);
 }
 
@@ -49,6 +53,8 @@ static int	execute_pipe_right_child(t_shell *shell, t_ast_node *node, \
 		perror("minishell: dup2");
 		cleanup_current_command(shell);
 		cleanup_env_cache(shell);
+		ft_heredoc_memory_collector(NULL, true);
+		ft_hash_memory_collector(NULL, true);
 		exit(1);
 	}
 	close(pipe_fd[0]);
@@ -59,6 +65,8 @@ static int	execute_pipe_right_child(t_shell *shell, t_ast_node *node, \
 	cleanup_env_cache(shell);
 	close(shell->stdin_backup);
 	close(shell->stdout_backup);
+	ft_heredoc_memory_collector(NULL, true);
+	ft_hash_memory_collector(NULL, true);
 	exit(ret);
 }
 

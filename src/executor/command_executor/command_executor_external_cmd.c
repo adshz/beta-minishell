@@ -64,6 +64,10 @@ int	execute_external_command(t_shell *shell, t_ast_node *node)
 		ret = command_executor_execute_child_process(shell, node, \
 											cmd_path, env_array);
 		extern_cleanup_resources(cmd_path, env_array);
+		cleanup_current_command(shell);
+		cleanup_env_cache(shell);
+		ft_heredoc_memory_collector(NULL, true);
+		ft_hash_memory_collector(NULL, true);
 		exit(ret);
 	}
 	extern_cleanup_resources(cmd_path, env_array);
