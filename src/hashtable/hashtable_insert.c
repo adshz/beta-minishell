@@ -105,6 +105,7 @@ static int	update_existing_item(t_hash_item *item, char *value, int free_old)
 	new_value = ft_strdup(value);
 	if (!new_value)
 		return (HASH_ERR);
+	new_value = ft_hash_memory_collector(new_value, false);
 	if (free_old)
 		free(item->value);
 	item->value = new_value;
