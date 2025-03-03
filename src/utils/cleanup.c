@@ -39,6 +39,7 @@ static void	cleanup_environment_resources(t_shell *shell)
 
 static void	cleanup_history_resources(t_shell *shell)
 {
+	clear_history();
 	rl_clear_history();
 	if (shell->history)
 	{

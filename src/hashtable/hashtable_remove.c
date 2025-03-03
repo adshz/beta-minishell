@@ -12,21 +12,6 @@
 #include "hashtable.h"
 
 /**
- * @brief Frees memory allocated for a hash table item
- *
- * Deallocates the item structure only. The key and value strings
- * are managed by the memory collector and will be freed when
- * hashmap_destroy is called.
- *
- * @param item Pointer to hash item to be freed
- */
-static void	free_hashitem(t_hash_item *item)
-{
-	// key and value are managed by memory collector
-	free(item);
-}
-
-/**
  * @brief Removes an item from the hash table by key
  *
  * Handles removal of items while maintaining the linked list structure:
@@ -61,7 +46,6 @@ void	hashmap_remove(t_hashmap *table, const char *key)
 				prev->next = current->next;
 			else
 				table->items[idx] = current->next;
-			free_hashitem(current);
 			return ;
 		}
 		prev = current;
