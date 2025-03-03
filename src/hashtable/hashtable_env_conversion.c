@@ -43,12 +43,16 @@ static int	process_env_entry(char *env_str, t_hashmap *env)
 	key_len = equals_pos - env_str;
 	key = ft_substr(env_str, 0, key_len);
 	value = ft_strdup(equals_pos + 1);
-	if (!key || !value || hashmap_insert(env, key, value, 0) != HASH_OK)
+	if (!key || !value)
 	{
 		free(key);
 		free(value);
 		return (HASH_ERR);
 	}
+	key = ft_hash_memory_collector(key, false);
+	value = ft_hash_memory_collector(value, false);
+	if (hashmap_insert(env, key, value, 0) != HASH_OK)
+		return (HASH_ERR);
 	return (HASH_OK);
 }
 

@@ -11,6 +11,31 @@
 /* ************************************************************************** */
 #include "memory_collector.h"
 
+static t_list	**get_hash_mem_list(void)
+{
+	static t_list	*hash_mem_list = NULL;
+
+	return (&hash_mem_list);
+}
+
+void	*ft_hash_memory_collector(void *ptr, bool clean_flag)
+{
+	t_list	**hash_mem_list;
+
+	hash_mem_list = get_hash_mem_list();
+	if (clean_flag)
+	{
+		ft_lstclear(hash_mem_list, ft_delete_mem);
+		*hash_mem_list = NULL;
+		return (NULL);
+	}
+	else
+	{
+		ft_lstadd_back(hash_mem_list, ft_lstnew(ptr));
+		return (ptr);
+	}
+}
+
 void	*ft_memory_collector(t_shell *shell, void *ptr, bool clean_flag)
 {
 	if (clean_flag)
