@@ -17,10 +17,14 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 	int		pipe_fds[2];
 	char	*line;
 	int		ret;
+	int		saved_stdin;
+	int		saved_stdout;
 
 	ret = setup_heredoc(node, pipe_fds, shell);
 	if (ret != 0)
 		return (ret);
+	if (setup_saved_fds(&saved_stdin, &saved_stdout) != 0)
+		return (1);
 	while (1)
 	{
 		write(STDERR_FILENO, "> ", 2);
@@ -30,6 +34,7 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 		{
 			close(pipe_fds[0]);
 			close(pipe_fds[1]);
+			cleanup_saved_fds(saved_stdin, saved_stdout);
 			shell->in_heredoc = 0;
 			g_signal_status = SIG_NONE;
 			return (ret);
@@ -38,7 +43,8 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 			break ;
 	}
 	node->data.content_fd = pipe_fds[0];
-	close(pipe_fds[1]);  // Close write end after we're done
+	close(pipe_fds[1]);
+	cleanup_saved_fds(saved_stdin, saved_stdout);
 	shell->in_heredoc = 0;
 	g_signal_status = SIG_NONE;
 	return (0);

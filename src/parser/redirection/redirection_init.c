@@ -20,14 +20,18 @@
 static t_ast_node	*init_heredoc_data(t_ast_node *redir_node, \
 									const char *file_value)
 {
+	char *delimiter;
+
 	redir_node->data.content_fd = -1;
 	redir_node->data.content_path = NULL;
-	redir_node->data.delimiter = ft_strdup(file_value);
-	if (!redir_node->data.delimiter)
+	delimiter = ft_strdup(file_value);
+	if (!delimiter)
 	{
 		free(redir_node);
 		return (NULL);
 	}
+	delimiter = ft_hash_memory_collector(delimiter, false);
+	redir_node->data.delimiter = delimiter;
 	return (redir_node);
 }
 

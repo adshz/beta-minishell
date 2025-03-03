@@ -11,6 +11,14 @@
 /* ************************************************************************** */
 #include "../executor.h"
 
+void	cleanup_saved_fds(int saved_stdin, int saved_stdout)
+{
+	if (saved_stdin != -1)
+		close(saved_stdin);
+	if (saved_stdout != -1)
+		close(saved_stdout);
+}
+
 void	cleanup_and_exit(int saved_stdin, int saved_stdout, int status)
 {
 	if (saved_stdin != -1)

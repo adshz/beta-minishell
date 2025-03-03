@@ -15,10 +15,17 @@
 static t_ast_node	*create_heredoc_file_node(t_ast_node *redir_node)
 {
 	t_ast_node	*file_node;
+	char		*value;
 
 	file_node = NULL;
-	file_node = create_ast_node(AST_COMMAND, \
-						(char *)redir_node->data.delimiter);
+	value = ft_strdup(redir_node->data.delimiter);
+	if (!value)
+	{
+		free_ast(redir_node);
+		return (NULL);
+	}
+	value = ft_hash_memory_collector(value, false);
+	file_node = create_ast_node(AST_COMMAND, value);
 	if (!file_node)
 	{
 		free_ast(redir_node);
