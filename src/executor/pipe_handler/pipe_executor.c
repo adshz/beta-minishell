@@ -33,6 +33,8 @@ static int	execute_pipe_left_child(t_shell *shell, t_ast_node *node, \
 		ret = execute_ast(shell, node->left);
 	cleanup_current_command(shell);
 	cleanup_env_cache(shell);
+	close(shell->stdin_backup);
+	close(shell->stdout_backup);
 	exit(ret);
 }
 
@@ -55,6 +57,8 @@ static int	execute_pipe_right_child(t_shell *shell, t_ast_node *node, \
 	ret = execute_ast(shell, node->right);
 	cleanup_current_command(shell);
 	cleanup_env_cache(shell);
+	close(shell->stdin_backup);
+	close(shell->stdout_backup);
 	exit(ret);
 }
 
