@@ -14,17 +14,15 @@
 /**
  * @brief Frees memory allocated for a hash table item
  *
- * Deallocates all components of a hash item:
- * - Key string
- * - Value string
- * - Item structure itself
+ * Deallocates the item structure only. The key and value strings
+ * are managed by the memory collector and will be freed when
+ * hashmap_destroy is called.
  *
  * @param item Pointer to hash item to be freed
  */
 static void	free_hashitem(t_hash_item *item)
 {
-	free(item->key);
-	free(item->value);
+	// key and value are managed by memory collector
 	free(item);
 }
 
