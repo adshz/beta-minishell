@@ -38,4 +38,7 @@ void	free_cmd(void *content);
 void	add_command_to_history(t_shell *shell, t_ast_node *cmd);
 bool	is_only_whitespace(const char *str);
 void	cleanup_ast_node_data(t_ast_node *node);
+/* Memory-tracked string functions */
+char	*tracked_strdup(const char *s);
+char	*tracked_itoa(int n);
 #endif

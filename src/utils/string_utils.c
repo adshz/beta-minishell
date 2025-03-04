@@ -102,3 +102,23 @@ char	*process_quoted_string(const char *input)
 	result[j] = '\0';
 	return (result);
 }
+
+char	*tracked_strdup(const char *s)
+{
+	char	*str;
+
+	str = ft_strdup(s);
+	if (!str)
+		return (NULL);
+	return (ft_hash_memory_collector(str, false));
+}
+
+char	*tracked_itoa(int n)
+{
+	char	*str;
+
+	str = ft_itoa(n);
+	if (!str)
+		return (NULL);
+	return (ft_hash_memory_collector(str, false));
+}

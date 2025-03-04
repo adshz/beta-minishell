@@ -35,17 +35,13 @@ static void	init_shlvl(t_shell *shell)
 	char	*key;
 	char	*value;
 
-	key = ft_strdup("SHLVL");
-	value = ft_strdup("1");
+	key = tracked_strdup("SHLVL");
+	value = tracked_strdup("1");
 	if (!key || !value)
 	{
-		free(key);
-		free(value);
 		handle_error(shell, ERROR_ENV, "Environment variable SHLVL failure");
 		return ;
 	}
-	key = ft_hash_memory_collector(key, false);
-	value = ft_hash_memory_collector(value, false);
 	hashmap_insert(shell->env, key, value, 0);
 	mark_env_modified(shell);
 }
@@ -74,10 +70,9 @@ static void	init_pwd(t_shell *shell)
 	char	*tmp;
 	char	*key;
 
-	key = ft_strdup("PWD");
+	key = tracked_strdup("PWD");
 	if (!key)
 		return;
-	key = ft_hash_memory_collector(key, false);
 	if (!hashmap_search(shell->env, key))
 	{
 		tmp = getcwd(NULL, 0);
@@ -167,32 +162,27 @@ void	init_env_vars(t_shell *shell, char *argv[])
 	init_shlvl(shell);
 	if (!hashmap_search(shell->env, "PATH"))
 	{
-		path = ft_strdup("/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
-		path_key = ft_strdup("PATH");
+		path = tracked_strdup("/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
+		path_key = tracked_strdup("PATH");
 		if (path && path_key)
 		{
-			path = ft_hash_memory_collector(path, false);
-			path_key = ft_hash_memory_collector(path_key, false);
 			hashmap_insert(shell->env, path_key, path, 0);
 			mark_env_modified(shell);
 		}
 	}
 	if (!hashmap_search(shell->env, "_"))
 	{
-		arg0 = ft_strdup(argv[0]);
-		underscore_key = ft_strdup("_");
+		arg0 = tracked_strdup(argv[0]);
+		underscore_key = tracked_strdup("_");
 		if (arg0 && underscore_key)
 		{
-			arg0 = ft_hash_memory_collector(arg0, false);
-			underscore_key = ft_hash_memory_collector(underscore_key, false);
 			hashmap_insert(shell->env, underscore_key, arg0, 0);
 			mark_env_modified(shell);
 		}
 	}
-	oldpwd_key = ft_strdup("OLDPWD");
+	oldpwd_key = tracked_strdup("OLDPWD");
 	if (oldpwd_key)
 	{
-		oldpwd_key = ft_hash_memory_collector(oldpwd_key, false);
 		hashmap_remove(shell->env, oldpwd_key);
 		mark_env_modified(shell);
 	}
