@@ -50,7 +50,6 @@ void cleanup_fds(void)
 {
 	t_list **fd_list;
 	t_list *current;
-	t_list *next;
 	int *fd_ptr;
 
 	fd_list = get_fd_list();
@@ -59,16 +58,10 @@ void cleanup_fds(void)
 	current = *fd_list;
 	while (current)
 	{
-		next = current->next;
 		fd_ptr = current->content;
-		if (fd_ptr)
-		{
-			if (*fd_ptr > STDERR_FILENO)
-				close(*fd_ptr);
-			free(fd_ptr);
-		}
-		free(current);
-		current = next;
+		if (fd_ptr && *fd_ptr > STDERR_FILENO)
+			close(*fd_ptr);
+		current = current->next;
 	}
 	*fd_list = NULL;
 } 
