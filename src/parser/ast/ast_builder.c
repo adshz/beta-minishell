@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "parser/parser.h"
+#include "memory_collector/memory_collector.h"
 
 static void	init_node_data(t_ast_node *node, t_ast_type type)
 {
@@ -65,21 +66,16 @@ t_ast_node	*create_ast_node(t_ast_type type, char *value)
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
 		return (NULL);
+	node = ft_hash_memory_collector(node, false);
 	init_node_data(node, type);
 	if (!value)
 		return (parser_handle_no_value(node, type));
 	tracked_value = ft_strdup(value);
 	if (!tracked_value)
-	{
-		free(node);
 		return (NULL);
-	}
+	tracked_value = ft_hash_memory_collector(tracked_value, false);
 	node = parser_handle_node_value(node, type, tracked_value);
 	if (!node || !node->value)
-	{
-		free(tracked_value);
-		free(node);
 		return (NULL);
-	}
 	return (track_ast_node(node));
 }

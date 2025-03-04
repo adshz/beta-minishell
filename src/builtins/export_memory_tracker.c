@@ -1,4 +1,5 @@
 #include "builtins/builtins.h"
+#include "utils/utils.h"
 
 static t_list **get_export_mem_list(void)
 {
@@ -28,18 +29,9 @@ char *track_export_value(char *value)
 void cleanup_export_values(void)
 {
     t_list **export_mem_list;
-    t_list *current;
-    t_list *next;
 
     export_mem_list = get_export_mem_list();
-    current = *export_mem_list;
-    while (current)
-    {
-        next = current->next;
-        if (current->content)
-            free(current->content);
-        free(current);
-        current = next;
-    }
+    if (!export_mem_list)
+        return ;
     *export_mem_list = NULL;
 } 
