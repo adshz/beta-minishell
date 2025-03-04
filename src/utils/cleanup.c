@@ -17,19 +17,19 @@
 
 static void	cleanup_command_resources(t_shell *shell)
 {
-	static bool	in_final_cleanup; 
-  
-  in_final_cleanup = false;
+	static bool	in_final_cleanup;
+
+	in_final_cleanup = false;
 	if (!in_final_cleanup && (shell->ast || shell->tokens || shell->line))
 	{
 		cleanup_current_command(shell);
 	}
 	if (shell->cmds)
 	{
-		if (!in_final_cleanup)
-		{
+		if (!in_final_cleanup && shell->ast == NULL)
+			ft_lstclear(&shell->cmds, NULL);
+		else if (!in_final_cleanup)
 			ft_lstclear(&shell->cmds, &free_cmd);
-		}
 		shell->cmds = NULL;
 	}
 	if (!in_final_cleanup)
