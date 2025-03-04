@@ -14,6 +14,8 @@
 
 # include "parser_types.h"
 
+t_ast_node  *track_pipeline_node(t_ast_node *node);
+void        cleanup_pipeline_nodes(void);
 t_ast_node	*parse_pipeline(t_token **tokens, t_shell *shell);
 t_ast_node	*process_pipeline(t_token **tokens);
 t_ast_node	*handle_pipeline_sequence(t_token **tokens);

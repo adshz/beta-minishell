@@ -42,7 +42,7 @@ static t_ast_node	*create_pipeline_node(t_ast_node *left, t_ast_node *right)
 	}
 	pipe_node->left = left;
 	pipe_node->right = right;
-	return (pipe_node);
+	return (track_pipeline_node(pipe_node));
 }
 
 /**
@@ -68,7 +68,7 @@ static t_ast_node	*parse_pipeline_left(t_token **tokens, t_shell *shell)
 	left = process_consecutive_redirections(left, tokens, shell);
 	if (!left)
 		return (NULL);
-	return (left);
+	return (track_pipeline_node(left));
 }
 
 /**

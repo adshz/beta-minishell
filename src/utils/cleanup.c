@@ -23,6 +23,7 @@ static void	cleanup_command_resources(t_shell *shell)
 	if (!already_cleaned && (shell->ast || shell->tokens || shell->line))
 	{
 		cleanup_current_command(shell);
+		cleanup_pipeline_nodes();
 		already_cleaned = true;
 	}
 	if (shell->cmds)

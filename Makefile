@@ -33,6 +33,7 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				parser/pipeline_memory_tracker.c \
 				parser/ast_memory_tracker.c \
 				parser/redirection/redirection_token_utils.c \
 				parser/ast/get_ast_type.c \
