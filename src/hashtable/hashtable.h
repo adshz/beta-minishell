@@ -73,7 +73,8 @@ void		hashmap_destroy(t_hashmap *table);
  * @param free_old Flag to determine if old value should be freed
  * @return HASH_OK on success, HASH_ERR on failure
  */
-int			hashmap_insert(t_hashmap *table, char *key, char *value, int free_old);
+int			hashmap_insert(t_hashmap *table, char *key, \
+					char *value, int free_old);
 
 /**
  * @brief Gets a value from the hash table
@@ -91,9 +92,11 @@ char		*hashmap_get(t_hashmap *table, const char *key);
  */
 char		*hashmap_search(t_hashmap *table, char *key);
 
-void		hashmap_iterate(t_hashmap *table, void (*f)(const char *, const char *));
+void		hashmap_iterate(t_hashmap *table, \
+					void (*f)(const char *, const char *));
 void		hashmap_set(t_hashmap *table, const char *key, const char *value);
-void		hashmap_handle_collision(t_hashmap *table, size_t index, t_hash_item *new_item);
+void		hashmap_handle_collision(t_hashmap *table, \
+							size_t index, t_hash_item *new_item);
 size_t		hashmap_size(t_hashmap *table);
 size_t		hash_function(const char *key, size_t table_size);
 

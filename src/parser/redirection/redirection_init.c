@@ -20,7 +20,7 @@
 static t_ast_node	*init_heredoc_data(t_ast_node *redir_node, \
 									const char *file_value)
 {
-	char *delimiter;
+	char	*delimiter;
 
 	redir_node->data.content_fd = -1;
 	redir_node->data.content_path = NULL;

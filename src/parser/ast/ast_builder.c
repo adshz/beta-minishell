@@ -11,14 +11,8 @@
 /* ************************************************************************** */
 #include "parser/parser.h"
 
-t_ast_node	*create_ast_node(t_ast_type type, char *value)
+static void	init_node_data(t_ast_node *node, t_ast_type type)
 {
-	t_ast_node	*node;
-	char		*tracked_value;
-
-	node = malloc(sizeof(t_ast_node));
-	if (!node)
-		return (NULL);
 	node->type = type;
 	node->args = NULL;
 	node->left = NULL;
@@ -29,47 +23,62 @@ t_ast_node	*create_ast_node(t_ast_type type, char *value)
 	node->data.content_path = NULL;
 	node->data.content_fd = -1;
 	node->data.delimiter = NULL;
-	if (value)
+}
+
+static t_ast_node	*parser_handle_heredoc(t_ast_node *node, \
+										char *tracked_value)
+{
+	node->value = ft_heredoc_memory_collector(tracked_value, false);
+	if (!node->value)
+		return (NULL);
+	node = ft_heredoc_memory_collector(node, false);
+	return (node);
+}
+
+static t_ast_node	*parser_handle_node_value(t_ast_node *node, t_ast_type type,
+									char *tracked_value)
+{
+	if (type == AST_HEREDOC)
 	{
-		tracked_value = ft_strdup(value);
-		if (!tracked_value)
-		{
-			free(node);
+		node = parser_handle_heredoc(node, tracked_value);
+		if (!node)
 			return (NULL);
-		}
-		if (type == AST_HEREDOC)
-		{
-			node->value = ft_heredoc_memory_collector(tracked_value, false);
-			node = ft_heredoc_memory_collector(node, false);
-		}
-		else
-			node->value = tracked_value;
-		if (!node->value)
-		{
-			free(node);
-			return (NULL);
-		}
 	}
-	else if (type == AST_HEREDOC)
+	else
+		node->value = tracked_value;
+	return (node);
+}
+
+static t_ast_node	*parser_handle_no_value(t_ast_node *node, t_ast_type type)
+{
+	if (type == AST_HEREDOC)
 		node = ft_heredoc_memory_collector(node, false);
 	return (node);
 }
 
-t_ast_type	get_ast_type(t_token_type type)
+t_ast_node	*create_ast_node(t_ast_type type, char *value)
 {
-	if (type == TOKEN_PIPE)
-		return (AST_PIPE);
-	if (type == TOKEN_REDIRECT_IN)
-		return (AST_REDIR_IN);
-	if (type == TOKEN_REDIRECT_OUT)
-		return (AST_REDIR_OUT);
-	if (type == TOKEN_APPEND)
-		return (AST_REDIR_APPEND);
-	if (type == TOKEN_HEREDOC)
-		return (AST_HEREDOC);
-	if (type == TOKEN_AND)
-		return (AST_AND);
-	if (type == TOKEN_OR)
-		return (AST_OR);
-	return (AST_COMMAND);
+	t_ast_node	*node;
+	char		*tracked_value;
+
+	node = malloc(sizeof(t_ast_node));
+	if (!node)
+		return (NULL);
+	init_node_data(node, type);
+	if (!value)
+		return (parser_handle_no_value(node, type));
+	tracked_value = ft_strdup(value);
+	if (!tracked_value)
+	{
+		free(node);
+		return (NULL);
+	}
+	node = parser_handle_node_value(node, type, tracked_value);
+	if (!node || !node->value)
+	{
+		free(tracked_value);
+		free(node);
+		return (NULL);
+	}
+	return (node);
 }

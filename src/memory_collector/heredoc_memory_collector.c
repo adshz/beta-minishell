@@ -60,4 +60,4 @@ void	*ft_heredoc_memory_collector(void *ptr, bool clean_flag)
 		ft_lstadd_back(heredoc_mem_list, ft_lstnew(ptr));
 		return (ptr);
 	}
-} 
+}

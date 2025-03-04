@@ -12,19 +12,23 @@
 #include "../executor.h"
 #include "utils/utils.h"
 
-int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
+static void	cleanup_heredoc(int pipe_fds[2], int saved_stdin,
+						int saved_stdout, t_shell *shell)
 {
-	int		pipe_fds[2];
+	close(pipe_fds[0]);
+	close(pipe_fds[1]);
+	cleanup_saved_fds(saved_stdin, saved_stdout);
+	shell->in_heredoc = 0;
+	g_signal_status = SIG_NONE;
+	ft_heredoc_memory_collector(NULL, true);
+}
+
+static int	process_heredoc_loop(t_ast_node *node, int pipe_fds[2],
+							t_shell *shell, int saved_fds[2])
+{
 	char	*line;
 	int		ret;
-	int		saved_stdin;
-	int		saved_stdout;
 
-	ret = setup_heredoc(node, pipe_fds, shell);
-	if (ret != 0)
-		return (ret);
-	if (setup_saved_fds(&saved_stdin, &saved_stdout) != 0)
-		return (1);
 	while (1)
 	{
 		write(STDERR_FILENO, "> ", 2);
@@ -32,20 +36,32 @@ int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
 		ret = handle_heredoc_line(line, pipe_fds, node, shell);
 		if (ret != 0)
 		{
-			close(pipe_fds[0]);
-			close(pipe_fds[1]);
-			cleanup_saved_fds(saved_stdin, saved_stdout);
-			shell->in_heredoc = 0;
-			g_signal_status = SIG_NONE;
-			ft_heredoc_memory_collector(NULL, true);
+			cleanup_heredoc(pipe_fds, saved_fds[0], saved_fds[1], shell);
 			return (ret);
 		}
 		if (write_heredoc_line(line, pipe_fds, node))
 			break ;
 	}
+	return (0);
+}
+
+int	collect_heredoc_content(t_ast_node *node, t_shell *shell)
+{
+	int		pipe_fds[2];
+	int		saved_fds[2];
+	int		ret;
+
+	ret = setup_heredoc(node, pipe_fds, shell);
+	if (ret != 0)
+		return (ret);
+	if (setup_saved_fds(&saved_fds[0], &saved_fds[1]) != 0)
+		return (1);
+	ret = process_heredoc_loop(node, pipe_fds, shell, saved_fds);
+	if (ret != 0)
+		return (ret);
 	node->data.content_fd = pipe_fds[0];
 	close(pipe_fds[1]);
-	cleanup_saved_fds(saved_stdin, saved_stdout);
+	cleanup_saved_fds(saved_fds[0], saved_fds[1]);
 	shell->in_heredoc = 0;
 	g_signal_status = SIG_NONE;
 	return (0);
@@ -64,7 +80,7 @@ int	setup_heredoc_pipe(t_ast_node *node)
 	if (dup2(old_fd, STDIN_FILENO) == -1)
 	{
 		close(old_fd);
-		ft_heredoc_memory_collector(NULL, true); 
+		ft_heredoc_memory_collector(NULL, true);
 		return (print_error("heredoc", "dup2 failed", 1));
 	}
 	close(old_fd);
