@@ -65,40 +65,6 @@ static bool	expand_variable_in_token(t_token *token, t_shell *shell)
 	return (handle_token_expansion(token, shell));
 }
 
-static t_ast_node	*build_expression_tree(t_token **tokens, t_shell *shell)
-{
-	t_ast_node	*node;
-	t_ast_node	*cmd;
-
-	node = NULL;
-	while (*tokens && is_redirection_token((*tokens)->type))
-	{
-		node = parse_redirection_construct(node, tokens, shell);
-		if (!node)
-			return (NULL);
-	}
-	if (*tokens && !is_redirection_token((*tokens)->type))
-	{
-		if (node)
-		{
-			cmd = parse_pipeline(tokens, shell);
-			if (!cmd)
-				return (NULL);
-			node->left = cmd;
-		}
-		else
-			node = parse_pipeline(tokens, shell);
-	}
-	while (*tokens && is_redirection_token((*tokens)->type))
-	{
-		node = parse_redirection_construct(node, tokens, shell);
-		if (!node)
-			return (NULL);
-	}
-	if (!node)
-		return (NULL);
-	return (node);
-}
 
 /**
  * @brief Parses an expression from the token stream.

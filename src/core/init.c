@@ -44,21 +44,9 @@ static void	cleanup_intialisation(t_shell *shell)
 	ft_memset(shell, 0, sizeof(t_shell));
 }
 
-/**
- * @brief Initializes I/O resources for the shell
- *
- * Sets up:
- * - Backup of standard input file descriptor
- * - Backup of standard output file descriptor
- *
- * @param shell Pointer to shell structure to initialize
- * @return SHELL_SUCCESS if all I/O resources initialized properly, 
- * SHELL_ERROR otherwise
- */
-int	init_io(t_shell *shell)
+static int	backup_stdin(t_shell *shell)
 {
 	shell->stdin_backup = STDIN_FILENO;
-	shell->stdout_backup = STDOUT_FILENO;
 	shell->stdin_backup = dup(STDIN_FILENO);
 	if (shell->stdin_backup == -1)
 	{
@@ -72,6 +60,25 @@ int	init_io(t_shell *shell)
 		ft_putendl_fd("Failed to track stdin backup", STDERR_FILENO);
 		return (SHELL_ERROR);
 	}
+	return (SHELL_SUCCESS);
+}
+
+/**
+ * @brief Initializes I/O resources for the shell
+ *
+ * Sets up:
+ * - Backup of standard input file descriptor
+ * - Backup of standard output file descriptor
+ *
+ * @param shell Pointer to shell structure to initialize
+ * @return SHELL_SUCCESS if all I/O resources initialized properly, 
+ * SHELL_ERROR otherwise
+ */
+int	init_io(t_shell *shell)
+{
+	shell->stdout_backup = STDOUT_FILENO;
+	if (backup_stdin(shell) == SHELL_ERROR)
+		return (SHELL_ERROR);
 	shell->stdout_backup = dup(STDOUT_FILENO);
 	if (shell->stdout_backup == -1)
 	{

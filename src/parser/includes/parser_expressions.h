@@ -13,5 +13,6 @@
 # define PARSER_EXPRESSIONS_H
 
 t_ast_node	*parse_expression(t_token **tokens, t_shell *shell);
+t_ast_node	*build_expression_tree(t_token **tokens, t_shell *shell);
 
 #endif
