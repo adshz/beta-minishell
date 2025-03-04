@@ -53,7 +53,7 @@ static t_ast_node *process_command_after_redirection(t_redir_token *rt,
 	t_ast_node *cmd_node;
 	t_ast_node *output_node;
 
-	cmd_node = create_ast_node(AST_COMMAND, next_after_redir->value);
+	cmd_node = track_ast_node(create_ast_node(AST_COMMAND, next_after_redir->value), false);
 	if (!cmd_node)
 		return (NULL);
 
