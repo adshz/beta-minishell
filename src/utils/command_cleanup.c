@@ -64,7 +64,7 @@ void	cleanup_current_command(t_shell *shell)
 	}
 	if (shell->ast)
 	{
-		track_ast_node(shell->ast);
+		free_ast(shell->ast);
 		shell->ast = NULL;
 	}
 	cleanup_ast_nodes();

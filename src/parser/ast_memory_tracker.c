@@ -13,9 +13,7 @@
 
 t_list	**get_ast_mem_list(void)
 {
-	static t_list	*ast_mem_list;
-
-	ast_mem_list = NULL;
+	static t_list	*ast_mem_list = NULL;
 	return (&ast_mem_list);
 }
 
