@@ -45,9 +45,9 @@ static void	init_shlvl(t_shell *shell)
 		handle_error(shell, ERROR_ENV, "Environment variable SHLVL failure");
 		return ;
 	}
+	tmp = ft_hash_memory_collector(tmp, false);
 	hashmap_insert(shell->env, "SHLVL", tmp, 0);
 	mark_env_modified(shell);
-	free(tmp);
 }
 
 /**
@@ -82,9 +82,9 @@ static void	init_pwd(t_shell *shell)
 				"Cannot determine current working directory");
 			return ;
 		}
+		tmp = ft_hash_memory_collector(tmp, false);
 		hashmap_insert(shell->env, "PWD", tmp, 0);
 		mark_env_modified(shell);
-		free(tmp);
 	}
 }
 
@@ -152,19 +152,36 @@ int	init_env(t_shell *shell, char *envp[])
  */
 void	init_env_vars(t_shell *shell, char *argv[])
 {
+	char	*path;
+	char	*arg0;
+	char	*path_key;
+	char	*underscore_key;
+
 	init_pwd(shell);
 	init_shlvl(shell);
 	if (!hashmap_search(shell->env, "PATH"))
 	{
-		hashmap_insert(shell->env, "PATH", \
-				"/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin", 0);
-		mark_env_modified(shell);
-		return ;
+		path = ft_strdup("/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
+		path_key = ft_strdup("PATH");
+		if (path && path_key)
+		{
+			path = ft_hash_memory_collector(path, false);
+			path_key = ft_hash_memory_collector(path_key, false);
+			hashmap_insert(shell->env, path_key, path, 0);
+			mark_env_modified(shell);
+		}
 	}
 	if (!hashmap_search(shell->env, "_"))
 	{
-		hashmap_insert(shell->env, "_", argv[0], 0);
-		mark_env_modified(shell);
+		arg0 = ft_strdup(argv[0]);
+		underscore_key = ft_strdup("_");
+		if (arg0 && underscore_key)
+		{
+			arg0 = ft_hash_memory_collector(arg0, false);
+			underscore_key = ft_hash_memory_collector(underscore_key, false);
+			hashmap_insert(shell->env, underscore_key, arg0, 0);
+			mark_env_modified(shell);
+		}
 	}
 	hashmap_remove(shell->env, "OLDPWD");
 	mark_env_modified(shell);
