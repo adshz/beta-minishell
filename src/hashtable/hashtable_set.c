@@ -20,7 +20,7 @@ static int	update_item_value(t_hash_item *item, const char *value)
 	new_value = ft_strdup(value);
 	if (!new_value)
 		return (-1);
-	free(item->value);
+	new_value = ft_hash_memory_collector(new_value, false);
 	item->value = new_value;
 	return (0);
 }
