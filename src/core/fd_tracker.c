@@ -12,6 +12,7 @@
 
 #include "core.h"
 #include "utils/utils.h"
+#include "memory_collector/memory_collector.h"
 
 static t_list **get_fd_list(void)
 {
@@ -40,6 +41,7 @@ int	track_fd(int fd)
 	if (!fd_ptr)
 		return (-1);
 	*fd_ptr = fd;
+	fd_ptr = ft_hash_memory_collector(fd_ptr, false);
 	ft_lstadd_back(fd_list, tracked_lstnew(fd_ptr));
 	return (fd);
 }

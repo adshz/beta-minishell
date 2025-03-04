@@ -21,7 +21,7 @@ char *track_export_value(char *value)
             return (value);
         current = current->next;
     }
-    ft_lstadd_back(export_mem_list, ft_lstnew(value));
+    ft_lstadd_back(export_mem_list, tracked_lstnew(value));
     return (value);
 }
 
