@@ -21,25 +21,18 @@ void	remove_from_ast_list(t_ast_node *node)
 {
 	t_list	**ast_mem_list;
 	t_list	*current;
-	t_list	*prev;
 
 	if (!node)
 		return ;
 	ast_mem_list = get_ast_mem_list();
 	current = *ast_mem_list;
-	prev = NULL;
 	while (current)
 	{
 		if (current->content == node)
 		{
-			if (prev)
-				prev->next = current->next;
-			else
-				*ast_mem_list = current->next;
-			current->content = NULL; 
+			((t_ast_node *)current->content)->is_freed = true;
 			return ;
 		}
-		prev = current;
 		current = current->next;
 	}
 }
@@ -70,11 +63,13 @@ void	cleanup_ast_nodes(void)
 	t_list	*next;
 
 	ast_mem_list = get_ast_mem_list();
+	if (!ast_mem_list || !*ast_mem_list)
+		return ;
 	current = *ast_mem_list;
 	while (current)
 	{
 		next = current->next;
-		if (current->content)
+		if (current->content && !((t_ast_node *)current->content)->is_freed)
 			free_ast(current->content);
 		free(current);
 		current = next;

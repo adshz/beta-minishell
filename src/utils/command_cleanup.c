@@ -62,12 +62,8 @@ void	cleanup_current_command(t_shell *shell)
 		free_tokens(shell->tokens);
 		shell->tokens = NULL;
 	}
-	if (shell->ast)
-	{
-		free_ast(shell->ast);
-		shell->ast = NULL;
-	}
 	cleanup_ast_nodes();
+	shell->ast = NULL;
 }
 
 void	cleanup_env_and_cmds(t_shell *shell)
