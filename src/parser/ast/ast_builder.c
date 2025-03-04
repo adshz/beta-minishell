@@ -74,7 +74,6 @@ t_ast_node	*create_ast_node(t_ast_type type, char *value)
 		free(node);
 		return (NULL);
 	}
-	tracked_value = track_expanded_str(tracked_value);
 	node = parser_handle_node_value(node, type, tracked_value);
 	if (!node || !node->value)
 	{
