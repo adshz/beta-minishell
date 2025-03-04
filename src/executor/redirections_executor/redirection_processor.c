@@ -68,14 +68,16 @@ static int	process_other_redirections(t_shell *shell, t_ast_node **redir_nodes,
 		int redir_count, int *saved_fds)
 {
 	int	i;
+	int ret;
 
 	i = 0;
 	while (i < redir_count)
 	{
 		if (redir_nodes[i]->type != AST_HEREDOC)
 		{
-			if (handle_redirection_type(redir_nodes[i], shell,
-					saved_fds[0], saved_fds[1]) != 0)
+			ret = handle_redirection_type(redir_nodes[i], shell,
+					saved_fds[0], saved_fds[1]);
+			if (ret != 0)
 			{
 				cleanup_and_exit(saved_fds[0], saved_fds[1], 1);
 				return (1);

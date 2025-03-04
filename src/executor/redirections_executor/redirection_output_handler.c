@@ -19,14 +19,29 @@ int	open_output_file(const char *expanded_filename, int *fd)
 		print_error((char *)expanded_filename, "Failed to open file", 1);
 		return (1);
 	}
+	if (track_fd(*fd) == -1)
+	{
+		close(*fd);
+		print_error("track_fd", "Failed to track file descriptor", 1);
+		return (1);
+	}
 	return (0);
 }
 
 int	setup_file_descriptor(int fd, char *expanded_filename)
 {
-	if (dup2(fd, STDOUT_FILENO) == -1)
+	int new_fd;
+
+	new_fd = dup2(fd, STDOUT_FILENO);
+	if (new_fd == -1)
 	{
 		print_error("dup2", "Failed to duplicate file descriptor", 1);
+		close(fd);
+		free(expanded_filename);
+		return (1);
+	}
+	if (track_fd(new_fd) == -1)
+	{
 		close(fd);
 		free(expanded_filename);
 		return (1);
@@ -64,6 +79,12 @@ int	open_append_file(const char *expanded_filename, int *fd)
 	if (*fd == -1)
 	{
 		print_error((char *)expanded_filename, "Failed to open file", 1);
+		return (1);
+	}
+	if (track_fd(*fd) == -1)
+	{
+		close(*fd);
+		print_error("track_fd", "Failed to track file descriptor", 1);
 		return (1);
 	}
 	return (0);

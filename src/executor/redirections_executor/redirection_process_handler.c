@@ -54,10 +54,12 @@ int	execute_child_process(t_shell *shell, t_ast_node *node)
 		exit_status = shell->exit_status;
 		cleanup_current_command(shell);
 		cleanup_env_cache(shell);
+		cleanup_fds();
 		exit(exit_status);
 	}
 	exit_status = execute_ast(shell, cmd_node);
 	cleanup_current_command(shell);
 	cleanup_env_cache(shell);
+	cleanup_fds();
 	exit(exit_status);
 }

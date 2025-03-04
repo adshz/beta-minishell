@@ -20,6 +20,11 @@ int	handle_cd_redirection(t_shell *shell, t_ast_node *node)
 	saved_stdout = dup(STDOUT_FILENO);
 	if (saved_stdout == -1)
 		return (print_error(NULL, "dup failed", 1));
+	if (track_fd(saved_stdout) == -1)
+	{
+		close(saved_stdout);
+		return (print_error(NULL, "Failed to track FD", 1));
+	}
 	setup_redirections(shell, node);
 	ret = execute_builtin(shell, node->left);
 	if (dup2(saved_stdout, STDOUT_FILENO) == -1)

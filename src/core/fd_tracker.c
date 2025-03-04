@@ -26,13 +26,17 @@ int	track_fd(int fd)
 
 	if (fd < 0)
 		return (-1);
+	ft_printf("PID %d: Attempting to track FD: %d\n", getpid(), fd);  // Debug
 	fd_list = get_fd_list();
 	current = *fd_list;
 	while (current)
 	{
 		fd_ptr = current->content;
 		if (fd_ptr && *fd_ptr == fd)
+		{
+			ft_printf("PID %d: FD %d already tracked\n", getpid(), fd);  // Debug
 			return (fd);
+		}
 		current = current->next;
 	}
 	fd_ptr = malloc(sizeof(int));
@@ -40,6 +44,7 @@ int	track_fd(int fd)
 		return (-1);
 	*fd_ptr = fd;
 	ft_lstadd_back(fd_list, ft_lstnew(fd_ptr));
+	ft_printf("PID %d: Successfully tracked FD: %d\n", getpid(), fd);  // Debug
 	return (fd);
 }
 
@@ -50,9 +55,13 @@ void cleanup_fds(void)
 	t_list *next;
 	int *fd_ptr;
 
+	ft_printf("PID %d: Starting FD cleanup...\n", getpid());  // Debug
 	fd_list = get_fd_list();
 	if (!fd_list || !*fd_list)
-		return ;
+	{
+		ft_printf("PID %d: No FDs to clean\n", getpid());  // Debug
+		return;
+	}
 	current = *fd_list;
 	while (current)
 	{
@@ -60,12 +69,17 @@ void cleanup_fds(void)
 		fd_ptr = current->content;
 		if (fd_ptr)
 		{
+			ft_printf("PID %d: Found FD: %d\n", getpid(), *fd_ptr);  // Debug
 			if (*fd_ptr > STDERR_FILENO)
+			{
+				ft_printf("PID %d: Closing FD: %d\n", getpid(), *fd_ptr);  // Debug
 				close(*fd_ptr);
+			}
 			free(fd_ptr);
 		}
 		free(current);
 		current = next;
 	}
 	*fd_list = NULL;
+	ft_printf("PID %d: FD cleanup complete\n", getpid());  // Debug
 } 

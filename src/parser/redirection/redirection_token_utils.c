@@ -53,7 +53,7 @@ static t_ast_node *process_command_after_redirection(t_redir_token *rt,
 	t_ast_node *cmd_node;
 	t_ast_node *output_node;
 
-	cmd_node = track_ast_node(create_ast_node(AST_COMMAND, next_after_redir->value), false);
+	cmd_node = track_ast_node(create_ast_node(AST_COMMAND, next_after_redir->value));
 	if (!cmd_node)
 		return (NULL);
 
@@ -90,7 +90,7 @@ static t_ast_node *process_normal_redirection(t_redir_token *rt,
 
 	if (!rt->result_left_node)
 	{
-		rt->result_left_node = track_ast_node(create_ast_node(AST_COMMAND, NULL), false);
+		rt->result_left_node = track_ast_node(create_ast_node(AST_COMMAND, NULL));
 		if (!rt->result_left_node)
 			return (NULL);
 	}
