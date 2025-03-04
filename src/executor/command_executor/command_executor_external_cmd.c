@@ -76,9 +76,9 @@ int	execute_external_command(t_shell *shell, t_ast_node *node)
 		return (ret);
 	pid = fork();
 	if (pid == -1)
-		return (handle_fork_error(cmd_path, env_array));
+		return (extern_handle_fork_error(cmd_path, env_array));
 	if (pid == 0)
-		return (handle_child_process(shell, node, cmd_path, env_array));
+		return (extern_handle_child_process(shell, node, cmd_path, env_array));
 	extern_cleanup_resources(cmd_path, env_array);
 	return (handle_external_parent_process(pid));
 }
