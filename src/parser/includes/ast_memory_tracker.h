@@ -16,7 +16,8 @@
 # include "parser/parser.h"
 
 t_list		**get_ast_mem_list(void);
+void	    remove_from_ast_list(t_ast_node *node);
 t_ast_node	*track_ast_node(t_ast_node *node);
-void		cleanup_ast_nodes(void);
+void		  cleanup_ast_nodes(void);
 
 #endif 

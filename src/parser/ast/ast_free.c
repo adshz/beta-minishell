@@ -68,5 +68,6 @@ void	free_ast(t_ast_node *node)
 		free_redirection_node(node);
 	else if (type == AST_COMMAND)
 		free_command_node(node);
+	remove_from_ast_list(node);
 	free(node);
 }

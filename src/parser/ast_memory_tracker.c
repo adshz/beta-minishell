@@ -17,6 +17,33 @@ t_list	**get_ast_mem_list(void)
 	return (&ast_mem_list);
 }
 
+void	remove_from_ast_list(t_ast_node *node)
+{
+	t_list	**ast_mem_list;
+	t_list	*current;
+	t_list	*prev;
+
+	if (!node)
+		return ;
+	ast_mem_list = get_ast_mem_list();
+	current = *ast_mem_list;
+	prev = NULL;
+	while (current)
+	{
+		if (current->content == node)
+		{
+			if (prev)
+				prev->next = current->next;
+			else
+				*ast_mem_list = current->next;
+			free(current);
+			return ;
+		}
+		prev = current;
+		current = current->next;
+	}
+}
+
 t_ast_node	*track_ast_node(t_ast_node *node)
 {
 	t_list	**ast_mem_list;
