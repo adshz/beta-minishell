@@ -119,6 +119,20 @@ int	init_env(t_shell *shell, char *envp[])
 	return (SHELL_ERROR);
 }
 
+static void	setup_default_path(t_shell *shell)
+{
+	char	*path;
+	char	*path_key;
+
+	path = tracked_strdup("/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
+	path_key = tracked_strdup("PATH");
+	if (path && path_key)
+	{
+		hashmap_insert(shell->env, path_key, path, 0);
+		mark_env_modified(shell);
+	}
+}
+
 /**
  * @brief Initialises essential environement variables for the shell
  *
@@ -152,29 +166,28 @@ int	init_env(t_shell *shell, char *envp[])
  */
 void	init_env_vars(t_shell *shell, char *argv[])
 {
-	char	*path;
 	char	*arg0;
-	char	*path_key;
 	char	*underscore_key;
 	char	*oldpwd_key;
 
 	init_pwd(shell);
 	init_shlvl(shell);
 	if (!hashmap_search(shell->env, "PATH"))
-	{
-		path = tracked_strdup("/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
-		path_key = tracked_strdup("PATH");
-		if (path && path_key)
-			(hashmap_insert(shell->env, path_key, path, 0), mark_env_modified(shell));
-	}
+		setup_default_path(shell);
 	if (!hashmap_search(shell->env, "_"))
 	{
 		arg0 = tracked_strdup(argv[0]);
 		underscore_key = tracked_strdup("_");
 		if (arg0 && underscore_key)
-			(hashmap_insert(shell->env, underscore_key, arg0, 0), mark_env_modified(shell));
+		{
+			hashmap_insert(shell->env, underscore_key, arg0, 0);
+			mark_env_modified(shell);
+		}
 	}
 	oldpwd_key = tracked_strdup("OLDPWD");
 	if (oldpwd_key)
-    (hashmap_remove(shell->env, oldpwd_key), mark_env_modified(shell));
+	{
+		hashmap_remove(shell->env, oldpwd_key);
+		mark_env_modified(shell);
+	}
 }
