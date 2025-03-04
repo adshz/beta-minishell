@@ -88,4 +88,5 @@ void	cleanup_shell(t_shell *shell)
 	ft_heredoc_memory_collector(NULL, true);
 	ft_hash_memory_collector(NULL, true);
 	cleanup_export_values();
+	cleanup_expanded_strings();
 }

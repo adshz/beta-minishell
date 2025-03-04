@@ -13,7 +13,7 @@
 #include "utils.h"
 #include "libft.h"
 #include <stdlib.h>
-
+#include "memory_collector.h"
 bool	is_only_whitespace(const char *str)
 {
 	if (!str)
@@ -68,9 +68,12 @@ char	*ft_strjoin3(const char *s1, const char *s2, const char *s3)
 	temp = ft_strjoin(s1, s2);
 	if (!temp)
 		return (NULL);
+	temp = track_expanded_str(temp);
 	result = ft_strjoin(temp, s3);
 	free(temp);
-	return (result);
+	if (!result)
+		return (NULL);
+	return (track_expanded_str(result));
 }
 
 char	*process_quoted_string(const char *input)

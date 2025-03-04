@@ -33,6 +33,7 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				memory_collector/expansion_memory_collector.c \
 				core/fd_tracker.c \
 				builtins/export_memory_tracker.c \
 				parser/pipeline_memory_tracker.c \

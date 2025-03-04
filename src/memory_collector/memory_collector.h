@@ -23,4 +23,9 @@ void	*ft_memory_collector(t_shell *shell, void *ptr, bool clean_flag);
 void	*ft_hash_memory_collector(void *ptr, bool clean_flag);
 void	*ft_heredoc_memory_collector(void *ptr, bool clean_flag);
 void	*ft_heredoc_memory_delone(void *ptr);
+
+/* String Expansion Memory Tracking */
+char	*track_expanded_str(char *str);
+void	cleanup_expanded_strings(void);
+
 #endif
