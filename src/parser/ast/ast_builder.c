@@ -27,13 +27,9 @@ static void	init_node_data(t_ast_node *node, t_ast_type type)
 	node->is_freed = false;
 }
 
-static t_ast_node	*parser_handle_heredoc(t_ast_node *node, \
-										char *tracked_value)
+static t_ast_node	*parser_handle_heredoc(t_ast_node *node, char *value)
 {
-	node->value = ft_heredoc_memory_collector(tracked_value, false);
-	if (!node->value)
-		return (NULL);
-	node = ft_heredoc_memory_collector(node, false);
+	node->value = value;
 	return (node);
 }
 
@@ -61,21 +57,20 @@ static t_ast_node	*parser_handle_no_value(t_ast_node *node, t_ast_type type)
 t_ast_node	*create_ast_node(t_ast_type type, char *value)
 {
 	t_ast_node	*node;
-	char		*tracked_value;
+	char		*new_value;
 
 	node = malloc(sizeof(t_ast_node));
 	if (!node)
 		return (NULL);
-	node = ft_hash_memory_collector(node, false);
 	init_node_data(node, type);
+	node = track_ast_node(node);
 	if (!value)
 		return (parser_handle_no_value(node, type));
-	tracked_value = ft_strdup(value);
-	if (!tracked_value)
+	new_value = ft_strdup(value);
+	if (!new_value)
 		return (NULL);
-	tracked_value = ft_hash_memory_collector(tracked_value, false);
-	node = parser_handle_node_value(node, type, tracked_value);
+	node = parser_handle_node_value(node, type, new_value);
 	if (!node || !node->value)
 		return (NULL);
-	return (track_ast_node(node));
+	return (node);
 }
