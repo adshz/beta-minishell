@@ -33,10 +33,15 @@
 static void	init_shlvl(t_shell *shell)
 {
 	char	*tmp;
+	char	*key;
 	int		shlvl;
 
 	shlvl = 1;
-	tmp = hashmap_search(shell->env, "SHLVL");
+	key = ft_strdup("SHLVL");
+	if (!key)
+		return;
+	key = ft_hash_memory_collector(key, false);
+	tmp = hashmap_search(shell->env, key);
 	if (tmp && ft_atoi(tmp) > 0)
 		shlvl = ft_atoi(tmp) + 1;
 	tmp = ft_itoa(shlvl);
@@ -46,7 +51,7 @@ static void	init_shlvl(t_shell *shell)
 		return ;
 	}
 	tmp = ft_hash_memory_collector(tmp, false);
-	hashmap_insert(shell->env, "SHLVL", tmp, 0);
+	hashmap_insert(shell->env, key, tmp, 0);
 	mark_env_modified(shell);
 }
 
@@ -72,8 +77,13 @@ static void	init_shlvl(t_shell *shell)
 static void	init_pwd(t_shell *shell)
 {
 	char	*tmp;
+	char	*key;
 
-	if (!hashmap_search(shell->env, "PWD"))
+	key = ft_strdup("PWD");
+	if (!key)
+		return;
+	key = ft_hash_memory_collector(key, false);
+	if (!hashmap_search(shell->env, key))
 	{
 		tmp = getcwd(NULL, 0);
 		if (!tmp)
@@ -83,7 +93,7 @@ static void	init_pwd(t_shell *shell)
 			return ;
 		}
 		tmp = ft_hash_memory_collector(tmp, false);
-		hashmap_insert(shell->env, "PWD", tmp, 0);
+		hashmap_insert(shell->env, key, tmp, 0);
 		mark_env_modified(shell);
 	}
 }
@@ -156,6 +166,7 @@ void	init_env_vars(t_shell *shell, char *argv[])
 	char	*arg0;
 	char	*path_key;
 	char	*underscore_key;
+	char	*oldpwd_key;
 
 	init_pwd(shell);
 	init_shlvl(shell);
@@ -183,6 +194,11 @@ void	init_env_vars(t_shell *shell, char *argv[])
 			mark_env_modified(shell);
 		}
 	}
-	hashmap_remove(shell->env, "OLDPWD");
-	mark_env_modified(shell);
+	oldpwd_key = ft_strdup("OLDPWD");
+	if (oldpwd_key)
+	{
+		oldpwd_key = ft_hash_memory_collector(oldpwd_key, false);
+		hashmap_remove(shell->env, oldpwd_key);
+		mark_env_modified(shell);
+	}
 }
