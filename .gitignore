@@ -8,4 +8,7 @@ settings.json
 readline_wrapper
 draft.c
 readline_wrapper.h
-draft.c
+draft.cdocker_test.sh
+Dockerfile
+run_tests.sh
+docker_test.sh
