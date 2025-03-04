@@ -34,6 +34,7 @@ static t_hash_item	*create_item(const char *key, const char *value)
 	new_item = (t_hash_item *)malloc(sizeof(t_hash_item));
 	if (!new_item)
 		return (NULL);
+	new_item = ft_hash_memory_collector(new_item, false);
 	new_item->key = ft_strdup(key);
 	new_item->value = ft_strdup(value);
 	new_item->next = NULL;
@@ -44,6 +45,9 @@ static t_hash_item	*create_item(const char *key, const char *value)
 		free(new_item);
 		return (NULL);
 	}
+	new_item->key = ft_hash_memory_collector(new_item->key, false);
+	new_item->value = ft_hash_memory_collector(new_item->value, false);
+	new_item->is_tracked = true;
 	return (new_item);
 }
 
