@@ -165,25 +165,16 @@ void	init_env_vars(t_shell *shell, char *argv[])
 		path = tracked_strdup("/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin");
 		path_key = tracked_strdup("PATH");
 		if (path && path_key)
-		{
-			hashmap_insert(shell->env, path_key, path, 0);
-			mark_env_modified(shell);
-		}
+			(hashmap_insert(shell->env, path_key, path, 0), mark_env_modified(shell));
 	}
 	if (!hashmap_search(shell->env, "_"))
 	{
 		arg0 = tracked_strdup(argv[0]);
 		underscore_key = tracked_strdup("_");
 		if (arg0 && underscore_key)
-		{
-			hashmap_insert(shell->env, underscore_key, arg0, 0);
-			mark_env_modified(shell);
-		}
+			(hashmap_insert(shell->env, underscore_key, arg0, 0), mark_env_modified(shell));
 	}
 	oldpwd_key = tracked_strdup("OLDPWD");
 	if (oldpwd_key)
-	{
-		hashmap_remove(shell->env, oldpwd_key);
-		mark_env_modified(shell);
-	}
+    (hashmap_remove(shell->env, oldpwd_key), mark_env_modified(shell));
 }

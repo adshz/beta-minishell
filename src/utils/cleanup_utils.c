@@ -14,34 +14,39 @@
 #include "parser/parser.h"
 #include "utils/utils.h"
 
+static void	cleanup_cmd_list_helper(t_shell *shell, bool in_final_cleanup)
+{
+	t_list	*current;
+	t_list	*next;
+
+	if (!shell->cmds)
+		return ;
+	if (!in_final_cleanup)
+	{
+		if (shell->ast == NULL)
+		{
+			current = shell->cmds;
+			while (current)
+			{
+				next = current->next;
+				free(current);
+				current = next;
+			}
+		}
+		else
+			ft_lstclear(&shell->cmds, &free_cmd);
+	}
+	shell->cmds = NULL;
+}
+
 void	cleanup_command_resources(t_shell *shell)
 {
 	static bool	in_final_cleanup;
-	t_list		*current;
-	t_list		*next;
 
 	in_final_cleanup = false;
 	if (!in_final_cleanup && (shell->ast || shell->tokens || shell->line))
 		cleanup_current_command(shell);
-	if (shell->cmds)
-	{
-		if (!in_final_cleanup)
-		{
-			if (shell->ast == NULL)
-			{
-				current = shell->cmds;
-				while (current)
-				{
-					next = current->next;
-					free(current);
-					current = next;
-				}
-			}
-			else
-				ft_lstclear(&shell->cmds, &free_cmd);
-		}
-		shell->cmds = NULL;
-	}
+	cleanup_cmd_list_helper(shell, in_final_cleanup);
 	if (!in_final_cleanup)
 		in_final_cleanup = true;
 }

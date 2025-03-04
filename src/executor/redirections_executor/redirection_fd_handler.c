@@ -43,18 +43,30 @@ void	cleanup_and_exit(int saved_stdin, int saved_stdout, int status)
 	exit(status);
 }
 
+static int	track_saved_fds(int saved_stdin, int saved_stdout)
+{
+	if (track_fd(saved_stdin) == -1)
+	{
+		close(saved_stdin);
+		print_error("track_fd", "Failed to track saved stdin", 1);
+		return (1);
+	}
+	if (track_fd(saved_stdout) == -1)
+	{
+		close(saved_stdin);
+		close(saved_stdout);
+		print_error("track_fd", "Failed to track saved stdout", 1);
+		return (1);
+	}
+	return (0);
+}
+
 int	setup_saved_fds(int *saved_stdin, int *saved_stdout)
 {
 	*saved_stdin = dup(STDIN_FILENO);
 	if (*saved_stdin == -1)
 	{
 		print_error("dup", "Failed to save stdin", 1);
-		return (1);
-	}
-	if (track_fd(*saved_stdin) == -1)
-	{
-		close(*saved_stdin);
-		print_error("track_fd", "Failed to track saved stdin", 1);
 		return (1);
 	}
 	*saved_stdout = dup(STDOUT_FILENO);
@@ -64,12 +76,7 @@ int	setup_saved_fds(int *saved_stdin, int *saved_stdout)
 		print_error("dup", "Failed to save stdout", 1);
 		return (1);
 	}
-	if (track_fd(*saved_stdout) == -1)
-	{
-		close(*saved_stdin);
-		close(*saved_stdout);
-		print_error("track_fd", "Failed to track saved stdout", 1);
+	if (track_saved_fds(*saved_stdin, *saved_stdout) != 0)
 		return (1);
-	}
 	return (0);
 }
