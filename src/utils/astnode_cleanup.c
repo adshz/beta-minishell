@@ -46,7 +46,10 @@ static void	cleanup_ast_node_content(t_ast_node *node)
 
 void	cleanup_ast_node_data(t_ast_node *node)
 {
+	if (!node || node->is_freed)
+		return ;
 	cleanup_ast_node_strings(node);
 	cleanup_ast_node_content(node);
+	node->is_freed = true;
 	free(node);
 }
