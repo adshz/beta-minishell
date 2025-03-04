@@ -61,6 +61,7 @@ void	free_ast(t_ast_node *node)
 	if (!node || node->is_freed)
 		return ;
 	node->is_freed = true;
+	remove_from_ast_list(node);
 	type = node->type;
 	if (type == AST_PIPE)
 		free_pipe_node(node);
@@ -68,6 +69,5 @@ void	free_ast(t_ast_node *node)
 		free_redirection_node(node);
 	else if (type == AST_COMMAND)
 		free_command_node(node);
-	remove_from_ast_list(node);
 	free(node);
 }
