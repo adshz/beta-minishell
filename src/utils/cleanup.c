@@ -48,7 +48,6 @@ void	cleanup_shell(t_shell *shell)
 	if (!shell)
 		return ;
 	cleanup_file_descriptors(shell);
-	cleanup_command_resources(shell);
 	cleanup_environment_resources(shell);
 	cleanup_history_resources(shell);
 	ft_heredoc_memory_collector(NULL, true);
