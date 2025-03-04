@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fd_tracker.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
+/*   By: evmouka <evmouka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 16:03:29 by szhong            #+#    #+#             */
-/*   Updated: 2025/02/17 16:03:31 by szhong           ###   ########.fr       */
+/*   Updated: 2025/03/04 16:26:10 by evmouka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,19 @@
 #include "utils/utils.h"
 #include "memory_collector/memory_collector.h"
 
-static t_list **get_fd_list(void)
+static t_list	**get_fd_list(void)
 {
-	static t_list *fd_list = NULL;
+	static t_list	*fd_list;
+
+	fd_list = NULL;
 	return (&fd_list);
 }
 
 int	track_fd(int fd)
 {
-	t_list **fd_list;
-	t_list *current;
-	int *fd_ptr;
+	t_list	**fd_list;
+	t_list	*current;
+	int		*fd_ptr;
 
 	if (fd < 0)
 		return (-1);
@@ -46,15 +48,15 @@ int	track_fd(int fd)
 	return (fd);
 }
 
-void cleanup_fds(void)
+void	cleanup_fds(void)
 {
-	t_list **fd_list;
-	t_list *current;
-	int *fd_ptr;
+	t_list	**fd_list;
+	t_list	*current;
+	int		*fd_ptr;
 
 	fd_list = get_fd_list();
 	if (!fd_list || !*fd_list)
-		return;
+		return ;
 	current = *fd_list;
 	while (current)
 	{
@@ -64,4 +66,4 @@ void cleanup_fds(void)
 		current = current->next;
 	}
 	*fd_list = NULL;
-} 
+}

@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 #include "../executor.h"
 
-static void collect_nodes_into_temp(t_ast_node *current, 
-								  t_ast_node *temp_nodes[],
-								  int *temp_count)
+static void	collect_nodes_into_temp(t_ast_node *current, \
+								t_ast_node *temp_nodes[], \
+								int *temp_count)
 {
 	while (current && *temp_count < 100)
 	{
@@ -27,12 +27,12 @@ static void collect_nodes_into_temp(t_ast_node *current,
 	}
 }
 
-static void reverse_nodes_order(t_ast_node *temp_nodes[],
-							  t_ast_node *redir_nodes[],
-							  int temp_count,
-							  int *redir_count)
+static void	reverse_nodes_order(t_ast_node *temp_nodes[], \
+							t_ast_node *redir_nodes[], \
+							int temp_count, \
+							int *redir_count)
 {
-	int i;
+	int	i;
 
 	i = temp_count - 1;
 	while (i >= 0)
@@ -43,11 +43,11 @@ static void reverse_nodes_order(t_ast_node *temp_nodes[],
 	}
 }
 
-int collect_redirection_nodes(t_ast_node *node, t_ast_node *redir_nodes[],
+int	collect_redirection_nodes(t_ast_node *node, t_ast_node *redir_nodes[], \
 							int *redir_count)
 {
-	t_ast_node  *temp_nodes[100];
-	int         temp_count;
+	t_ast_node	*temp_nodes[100];
+	int			temp_count;
 
 	temp_count = 0;
 	*redir_count = 0;
@@ -57,7 +57,7 @@ int collect_redirection_nodes(t_ast_node *node, t_ast_node *redir_nodes[],
 }
 
 int	handle_redirection_type(t_ast_node *current, t_shell *shell, \
-	int saved_stdin, int saved_stdout)
+							int saved_stdin, int saved_stdout)
 {
 	int	status;
 

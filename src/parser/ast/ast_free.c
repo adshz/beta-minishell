@@ -56,7 +56,7 @@ static bool	is_ast_redirection_node(t_ast_type type)
 
 void	free_ast(t_ast_node *node)
 {
-	t_ast_type type;
+	t_ast_type	type;
 
 	if (!node || node->is_freed)
 		return ;

@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 #include "parser/parser.h"
 
-static bool handle_next_token_expression(t_token *token, t_shell *shell)
+static bool	handle_next_token_expression(t_token *token, t_shell *shell)
 {
-	char *expanded;
+	char	*expanded;
 
 	expanded = NULL;
 	if (!token->next || !ft_strchr(token->next->value, '$'))
@@ -26,9 +26,9 @@ static bool handle_next_token_expression(t_token *token, t_shell *shell)
 	return (true);
 }
 
-static bool handle_token_expansion(t_token *token, t_shell *shell)
+static bool	handle_token_expansion(t_token *token, t_shell *shell)
 {
-	char *expanded;
+	char	*expanded;
 
 	expanded = NULL;
 	expanded = parse_handle_variable_expansion(shell, token->value);
@@ -53,9 +53,9 @@ static bool handle_token_expansion(t_token *token, t_shell *shell)
  * @param shell The shell instance
  * @return true if the token was expanded, false otherwise
  */
-static bool expand_variable_in_token(t_token *token, t_shell *shell)
+static bool	expand_variable_in_token(t_token *token, t_shell *shell)
 {
-	char *dollar_pos;
+	char	*dollar_pos;
 
 	if (!ft_strchr(token->value, '$'))
 		return (true);
@@ -65,9 +65,10 @@ static bool expand_variable_in_token(t_token *token, t_shell *shell)
 	return (handle_token_expansion(token, shell));
 }
 
-static t_ast_node *build_expression_tree(t_token **tokens, t_shell *shell)
+static t_ast_node	*build_expression_tree(t_token **tokens, t_shell *shell)
 {
-	t_ast_node *node;
+	t_ast_node	*node;
+	t_ast_node	*cmd;
 
 	node = NULL;
 	while (*tokens && is_redirection_token((*tokens)->type))
@@ -80,7 +81,7 @@ static t_ast_node *build_expression_tree(t_token **tokens, t_shell *shell)
 	{
 		if (node)
 		{
-			t_ast_node *cmd = parse_pipeline(tokens, shell);
+			cmd = parse_pipeline(tokens, shell);
 			if (!cmd)
 				return (NULL);
 			node->left = cmd;
@@ -88,7 +89,7 @@ static t_ast_node *build_expression_tree(t_token **tokens, t_shell *shell)
 		else
 			node = parse_pipeline(tokens, shell);
 	}
-		while (*tokens && is_redirection_token((*tokens)->type))
+	while (*tokens && is_redirection_token((*tokens)->type))
 	{
 		node = parse_redirection_construct(node, tokens, shell);
 		if (!node)
@@ -118,7 +119,7 @@ static t_ast_node *build_expression_tree(t_token **tokens, t_shell *shell)
  * @see parse_pipeline() for pipeline handling
  * @see parse_redirection_construct() for redirection handling
  */
-t_ast_node *parse_expression(t_token **tokens, t_shell *shell)
+t_ast_node	*parse_expression(t_token **tokens, t_shell *shell)
 {
 	if (!tokens || !*tokens)
 		return (NULL);

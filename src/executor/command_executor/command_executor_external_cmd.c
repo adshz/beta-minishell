@@ -9,17 +9,8 @@
 /*   Updated: 2025/02/21 15:56:23 by szhong           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "executor/executor.h"
 #include "utils/utils.h"
-
-static void	extern_cleanup_resources(char *cmd_path, char **env_array)
-{
-	if (cmd_path)
-		free(cmd_path);
-	if (env_array)
-		ft_free_array(env_array);
-}
 
 static int	prepare_command(t_shell *shell, t_ast_node *node,
 						char **cmd_path, char ***env_array)
@@ -42,14 +33,6 @@ static int	prepare_command(t_shell *shell, t_ast_node *node,
 	return (0);
 }
 
-static void	cleanup_and_exit_external(t_shell *shell, int status)
-{
-	cleanup_shell(shell);
-	ft_heredoc_memory_collector(NULL, true);
-	ft_hash_memory_collector(NULL, true);
-	exit(status);
-}
-
 static int	extern_handle_child_process(t_shell *shell, t_ast_node *node,
 							char *cmd_path, char **env_array)
 {
@@ -64,12 +47,6 @@ static int	extern_handle_child_process(t_shell *shell, t_ast_node *node,
 	cleanup_env_cache(shell);
 	cleanup_and_exit_external(shell, ret);
 	return (ret);
-}
-
-static int	extern_handle_fork_error(char *cmd_path, char **env_array)
-{
-	extern_cleanup_resources(cmd_path, env_array);
-	return (1);
 }
 
 int	execute_external_command(t_shell *shell, t_ast_node *node)

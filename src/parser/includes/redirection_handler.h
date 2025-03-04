@@ -15,8 +15,13 @@
 
 # include "parser_types.h"
 
-t_ast_node *handle_regular_redirection(t_redir_token *rt);
-bool 		is_redirection_type(t_ast_type type);
+t_ast_node	*create_file_node(t_token *file_token, \
+								t_ast_node *redir_node);
+bool		validate_file_token(t_token *file_token);
+t_ast_node	*create_file_node(t_token *file_token, \
+								t_ast_node *redir_node);
+t_ast_node	*handle_regular_redirection(t_redir_token *rt);
+bool		is_redirection_type(t_ast_type type);
 t_ast_node	*create_redir_file_node(const char *file_value, \
 								t_ast_node *redir_node);
 t_ast_node	*parse_redirection_construct(t_ast_node *left, t_token **tokens, \

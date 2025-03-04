@@ -30,7 +30,7 @@ int	open_input_file(const char *expanded_filename, int *fd)
 
 int	setup_input_descriptor(int fd, char *expanded_filename)
 {
-	int new_fd;
+	int	new_fd;
 
 	new_fd = dup2(fd, STDIN_FILENO);
 	if (new_fd == -1)

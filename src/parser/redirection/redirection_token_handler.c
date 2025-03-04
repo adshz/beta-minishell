@@ -11,8 +11,8 @@
 /* ************************************************************************** */
 #include "parser/parser.h"
 
-static void init_redir_token(t_redir_token *rt, t_redir_parse *parse,
-							 t_token **tokens)
+static void	init_redir_token(t_redir_token *rt, t_redir_parse *parse,
+							t_token **tokens)
 {
 	rt->current = &parse->current;
 	rt->tokens = tokens;
@@ -34,7 +34,7 @@ static void init_redir_token(t_redir_token *rt, t_redir_parse *parse,
  * - regular redirection token (e.g. `>`, `>>`, `<`)
 
  */
-static t_ast_node *handle_redirection_token(t_redir_token *rt)
+static t_ast_node	*handle_redirection_token(t_redir_token *rt)
 {
 	if ((*rt->current)->type == TOKEN_HEREDOC)
 		return (handle_heredoc_token(rt));
@@ -52,10 +52,10 @@ static t_ast_node *handle_redirection_token(t_redir_token *rt)
  * as its parent function parse_redirection_construct() has a while loop
  * iterate through each token in the tokens list
  */
-t_ast_node *process_redir_token(t_redir_parse *parse, t_token **tokens)
+t_ast_node	*process_redir_token(t_redir_parse *parse, t_token **tokens)
 {
-	t_word_token wt;
-	t_redir_token rt;
+	t_word_token	wt;
+	t_redir_token	rt;
 
 	if (parse->current->type == TOKEN_WORD)
 	{

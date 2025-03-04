@@ -33,6 +33,9 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				parser/redirection/redirection_helper.c \
+				utils/mem_tracker_utils.c \
+				utils/cleanup_utils.c \
 				memory_collector/expansion_memory_collector.c \
 				core/fd_tracker.c \
 				builtins/export_memory_tracker.c \

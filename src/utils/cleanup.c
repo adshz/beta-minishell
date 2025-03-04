@@ -9,44 +9,10 @@
 /*   Updated: 2025/02/13 21:49:44 by evmouka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "shell.h"
 #include "lexer/lexer.h"
 #include "parser/parser.h"
 #include "utils/utils.h"
-
-static void	cleanup_command_resources(t_shell *shell)
-{
-	static bool	in_final_cleanup;
-
-	in_final_cleanup = false;
-	if (!in_final_cleanup && (shell->ast || shell->tokens || shell->line))
-	{
-		cleanup_current_command(shell);
-	}
-	if (shell->cmds)
-	{
-		if (!in_final_cleanup)
-		{
-			if (shell->ast == NULL)
-			{
-				t_list *current = shell->cmds;
-				t_list *next;
-				while (current)
-				{
-					next = current->next;
-					free(current);
-					current = next;
-				}
-			}
-			else
-				ft_lstclear(&shell->cmds, &free_cmd);
-		}
-		shell->cmds = NULL;
-	}
-	if (!in_final_cleanup)
-		in_final_cleanup = true;
-}
 
 static void	cleanup_environment_resources(t_shell *shell)
 {
@@ -75,29 +41,6 @@ static void	cleanup_file_descriptors(t_shell *shell)
 	shell->stdin_backup = STDIN_FILENO;
 	shell->stdout_backup = STDOUT_FILENO;
 	cleanup_fds();
-}
-
-static void cleanup_ast_by_type(t_list *node_list)
-{
-	t_list *current;
-	t_list *next;
-	t_ast_node *ast_node;
-
-	current = node_list;
-	while (current)
-	{
-		next = current->next;
-		ast_node = current->content;
-		if (ast_node && !ast_node->is_freed)
-		{
-			if (ast_node->type == AST_PIPE)
-				cleanup_pipeline_nodes();
-			else
-				free_ast(ast_node);
-		}
-		free(current);
-		current = next;
-	}
 }
 
 void	cleanup_shell(t_shell *shell)

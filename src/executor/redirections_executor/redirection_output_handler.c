@@ -30,7 +30,7 @@ int	open_output_file(const char *expanded_filename, int *fd)
 
 int	setup_file_descriptor(int fd, char *expanded_filename)
 {
-	int new_fd;
+	int	new_fd;
 
 	new_fd = dup2(fd, STDOUT_FILENO);
 	if (new_fd == -1)

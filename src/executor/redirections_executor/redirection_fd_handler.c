@@ -57,7 +57,6 @@ int	setup_saved_fds(int *saved_stdin, int *saved_stdout)
 		print_error("track_fd", "Failed to track saved stdin", 1);
 		return (1);
 	}
-
 	*saved_stdout = dup(STDOUT_FILENO);
 	if (*saved_stdout == -1)
 	{

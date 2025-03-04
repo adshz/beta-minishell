@@ -72,7 +72,7 @@ static void	init_pwd(t_shell *shell)
 
 	key = tracked_strdup("PWD");
 	if (!key)
-		return;
+		return ;
 	if (!hashmap_search(shell->env, key))
 	{
 		tmp = getcwd(NULL, 0);

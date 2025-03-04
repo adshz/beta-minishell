@@ -12,16 +12,18 @@
 
 #include "memory_collector.h"
 
-static t_list **get_expansion_mem_list(void)
+static t_list	**get_expansion_mem_list(void)
 {
-	static t_list *expansion_mem_list = NULL;
+	static t_list	*expansion_mem_list;
+
+	expansion_mem_list = NULL;
 	return (&expansion_mem_list);
 }
 
-char *track_expanded_str(char *str)
+char	*track_expanded_str(char *str)
 {
-	t_list **expansion_mem_list;
-	t_list *current;
+	t_list	**expansion_mem_list;
+	t_list	*current;
 
 	if (!str)
 		return (NULL);
@@ -37,11 +39,11 @@ char *track_expanded_str(char *str)
 	return (str);
 }
 
-void cleanup_expanded_strings(void)
+void	cleanup_expanded_strings(void)
 {
-	t_list **expansion_mem_list;
-	t_list *current;
-	t_list *next;
+	t_list	**expansion_mem_list;
+	t_list	*current;
+	t_list	*next;
 
 	expansion_mem_list = get_expansion_mem_list();
 	current = *expansion_mem_list;
@@ -54,4 +56,4 @@ void cleanup_expanded_strings(void)
 		current = next;
 	}
 	*expansion_mem_list = NULL;
-} 
+}

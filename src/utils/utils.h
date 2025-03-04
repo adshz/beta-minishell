@@ -17,6 +17,11 @@
 # include "errors.h"
 
 /* Error handling */
+int		extern_handle_fork_error(char *cmd_path, char **env_array);
+void	extern_cleanup_resources(char *cmd_path, char **env_array);
+void	cleanup_and_exit_external(t_shell *shell, int status);
+void	cleanup_command_resources(t_shell *shell);
+void	cleanup_ast_by_type(t_list *node_list);
 void	cleanup_ast_node(t_ast_node *node);
 void	handle_error(t_shell *shell, t_error_type error, const char *detail);
 void	cleanup_heredoc_signal_interrupt(t_ast_node *node);
@@ -41,5 +46,5 @@ void	cleanup_ast_node_data(t_ast_node *node);
 /* Memory-tracked string functions */
 char	*tracked_strdup(const char *s);
 char	*tracked_itoa(int n);
-t_list  *tracked_lstnew(void *content);
+t_list	*tracked_lstnew(void *content);
 #endif

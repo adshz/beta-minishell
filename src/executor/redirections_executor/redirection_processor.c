@@ -68,7 +68,7 @@ static int	process_other_redirections(t_shell *shell, t_ast_node **redir_nodes,
 		int redir_count, int *saved_fds)
 {
 	int	i;
-	int ret;
+	int	ret;
 
 	i = 0;
 	while (i < redir_count)

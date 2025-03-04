@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection_token_utils.c                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: szhong <szhong@student.42london.com>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/04 16:12:48 by szhong            #+#    #+#             */
+/*   Updated: 2025/03/04 16:13:20 by szhong           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "parser/parser.h"
 
 /**
@@ -47,16 +58,16 @@
  * // Sync current with tokens
  * - *rt->current = *rt->tokens; // Now points to Token 5 (NULL)
  */
-static t_ast_node *process_command_after_redirection(t_redir_token *rt, 
-                                                   t_token *next_after_redir)
+static t_ast_node	*process_command_after_redirection(t_redir_token *rt, \
+													t_token *next_after_redir)
 {
-	t_ast_node *cmd_node;
-	t_ast_node *output_node;
+	t_ast_node	*cmd_node;
+	t_ast_node	*output_node;
 
-	cmd_node = track_ast_node(create_ast_node(AST_COMMAND, next_after_redir->value));
+	cmd_node = track_ast_node(\
+						create_ast_node(AST_COMMAND, next_after_redir->value));
 	if (!cmd_node)
 		return (NULL);
-
 	output_node = process_redirection(*rt->current, cmd_node);
 	if (!output_node)
 	{
@@ -68,10 +79,10 @@ static t_ast_node *process_command_after_redirection(t_redir_token *rt,
 	return (output_node);
 }
 
-static t_ast_node *process_existing_command(t_redir_token *rt, 
-                                          t_token *next_after_redir)
+static t_ast_node	*process_existing_command(t_redir_token *rt, \
+											t_token *next_after_redir)
 {
-	t_ast_node *output_node;
+	t_ast_node	*output_node;
 
 	output_node = process_redirection(*rt->current, rt->result_left_node);
 	if (!output_node)
@@ -83,14 +94,15 @@ static t_ast_node *process_existing_command(t_redir_token *rt,
 	return (output_node);
 }
 
-static t_ast_node *process_normal_redirection(t_redir_token *rt, 
-                                            t_token *next_after_redir)
+static t_ast_node	*process_normal_redirection(t_redir_token *rt, \
+											t_token *next_after_redir)
 {
-	t_ast_node *output_node;
+	t_ast_node	*output_node;
 
 	if (!rt->result_left_node)
 	{
-		rt->result_left_node = track_ast_node(create_ast_node(AST_COMMAND, NULL));
+		rt->result_left_node = track_ast_node(\
+										create_ast_node(AST_COMMAND, NULL));
 		if (!rt->result_left_node)
 			return (NULL);
 	}
@@ -104,18 +116,18 @@ static t_ast_node *process_normal_redirection(t_redir_token *rt,
 	return (output_node);
 }
 
-t_ast_node *handle_regular_redirection(t_redir_token *rt)
+t_ast_node	*handle_regular_redirection(t_redir_token *rt)
 {
-	t_ast_node *output_node;
-	t_token *next_after_redir;
+	t_ast_node	*output_node;
+	t_token		*next_after_redir;
 
 	output_node = NULL;
 	next_after_redir = (*rt->current)->next->next;
-	if (next_after_redir && next_after_redir->type == TOKEN_WORD &&
+	if (next_after_redir && next_after_redir->type == TOKEN_WORD && \
 		!is_redirection_token(next_after_redir->type))
 		output_node = process_command_after_redirection(rt, next_after_redir);
-	else if (rt->result_left_node && rt->result_left_node->left &&
-			 rt->result_left_node->left->type == AST_COMMAND)
+	else if (rt->result_left_node && rt->result_left_node->left && \
+			rt->result_left_node->left->type == AST_COMMAND)
 		output_node = process_existing_command(rt, next_after_redir);
 	else
 		output_node = process_normal_redirection(rt, next_after_redir);
