@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "export.h"
+#include "utils/utils.h"
 
 void	export_handle_expanded_value(t_shell *shell, char *key, char *value)
 {
@@ -48,7 +49,7 @@ char	*export_handle_quoted_value(char *value)
 		unquoted = ft_substr(value, 1, val_len - 2);
 		return (track_export_value(unquoted));
 	}
-	unquoted = ft_strdup(value);
+	unquoted = tracked_strdup(value);
 	return (track_export_value(unquoted));
 }
 

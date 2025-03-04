@@ -12,6 +12,7 @@
 
 #include "shell.h"
 #include "libft.h"
+#include "utils/utils.h"
 #include <stdlib.h>
 
 void	free_cmd(void *content)
@@ -30,7 +31,7 @@ void	add_command_to_history(t_shell *shell, t_ast_node *cmd)
 
 	if (!shell || !cmd)
 		return ;
-	new_cmd = ft_lstnew(cmd);
+	new_cmd = tracked_lstnew(cmd);
 	if (!new_cmd)
 		return ;
 	ft_lstadd_back(&shell->cmds, new_cmd);

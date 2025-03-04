@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "core.h"
+#include "utils/utils.h"
 
 static t_list **get_fd_list(void)
 {
@@ -39,7 +40,7 @@ int	track_fd(int fd)
 	if (!fd_ptr)
 		return (-1);
 	*fd_ptr = fd;
-	ft_lstadd_back(fd_list, ft_lstnew(fd_ptr));
+	ft_lstadd_back(fd_list, tracked_lstnew(fd_ptr));
 	return (fd);
 }
 
