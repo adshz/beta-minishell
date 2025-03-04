@@ -124,21 +124,12 @@ t_ast_node	*parse(t_token *tokens, t_shell *shell)
 	if (!tokens)
 		return (NULL);
 	if (!validate_initial_pipe(tokens, shell))
-	{
-		cleanup_ast_nodes();
-		return (NULL);
-	}
+		return ((cleanup_ast_nodes(), NULL));
 	current = tokens;
 	ast = parse_expression(&current, shell);
 	if (!ast)
-	{
-		cleanup_ast_nodes();
-		return (is_parse_error(current, shell));
-	}
+		return (cleanup_ast_nodes(), is_parse_error(current, shell));
 	if (!validate_remaining_tokens(current, ast, shell))
-	{
-		cleanup_ast_nodes();
-		return (NULL);
-	}
+		return ((cleanup_ast_nodes(), NULL));
 	return (ast);
 }
