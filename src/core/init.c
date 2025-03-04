@@ -50,27 +50,43 @@ static void	cleanup_intialisation(t_shell *shell)
  * Sets up:
  * - Backup of standard input file descriptor
  * - Backup of standard output file descriptor
- * - Terminal settings for proper signal handling
  *
  * @param shell Pointer to shell structure to initialize
  * @return SHELL_SUCCESS if all I/O resources initialized properly, 
  * SHELL_ERROR otherwise
- *
- * @note File descriptors are backed up for handling pipes and redirections
- * @note Terminal settings are needed for proper signal handling
  */
 int	init_io(t_shell *shell)
 {
+	shell->stdin_backup = STDIN_FILENO;
+	shell->stdout_backup = STDOUT_FILENO;
 	shell->stdin_backup = dup(STDIN_FILENO);
-	shell->stdout_backup = dup(STDOUT_FILENO);
-	if (shell->stdin_backup == -1 || shell->stdout_backup == -1)
+	if (shell->stdin_backup == -1)
 	{
-		ft_putendl_fd("Failed to backup file descriptors", STDERR_FILENO);
+		ft_putendl_fd("Failed to backup stdin", STDERR_FILENO);
 		return (SHELL_ERROR);
 	}
-	if (tcgetattr(STDIN_FILENO, &shell->term_settings) == -1)
+	if (track_fd(shell->stdin_backup) == -1)
 	{
-		ft_putendl_fd("Failed to get terminal attributes", STDERR_FILENO);
+		close(shell->stdin_backup);
+		shell->stdin_backup = STDIN_FILENO;
+		ft_putendl_fd("Failed to track stdin backup", STDERR_FILENO);
+		return (SHELL_ERROR);
+	}
+	shell->stdout_backup = dup(STDOUT_FILENO);
+	if (shell->stdout_backup == -1)
+	{
+		close(shell->stdin_backup);
+		shell->stdin_backup = STDIN_FILENO;
+		ft_putendl_fd("Failed to backup stdout", STDERR_FILENO);
+		return (SHELL_ERROR);
+	}
+	if (track_fd(shell->stdout_backup) == -1)
+	{
+		close(shell->stdin_backup);
+		close(shell->stdout_backup);
+		shell->stdin_backup = STDIN_FILENO;
+		shell->stdout_backup = STDOUT_FILENO;
+		ft_putendl_fd("Failed to track stdout backup", STDERR_FILENO);
 		return (SHELL_ERROR);
 	}
 	return (SHELL_SUCCESS);

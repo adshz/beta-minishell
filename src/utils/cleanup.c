@@ -23,7 +23,6 @@ static void	cleanup_command_resources(t_shell *shell)
 	if (!already_cleaned && (shell->ast || shell->tokens || shell->line))
 	{
 		cleanup_current_command(shell);
-		cleanup_pipeline_nodes();
 		already_cleaned = true;
 	}
 	if (shell->cmds)
@@ -57,26 +56,20 @@ static void	cleanup_history_resources(t_shell *shell)
 
 static void	cleanup_file_descriptors(t_shell *shell)
 {
-	if (shell->stdin_backup != STDIN_FILENO)
-	{
-		close(shell->stdin_backup);
-		shell->stdin_backup = STDIN_FILENO;
-	}
-	if (shell->stdout_backup != STDOUT_FILENO)
-	{
-		close(shell->stdout_backup);
-		shell->stdout_backup = STDOUT_FILENO;
-	}
+	shell->stdin_backup = STDIN_FILENO;
+	shell->stdout_backup = STDOUT_FILENO;
+	cleanup_fds();
 }
 
 void	cleanup_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
+	cleanup_file_descriptors(shell);
 	cleanup_command_resources(shell);
 	cleanup_environment_resources(shell);
 	cleanup_history_resources(shell);
-	cleanup_file_descriptors(shell);
 	ft_heredoc_memory_collector(NULL, true);
 	ft_hash_memory_collector(NULL, true);
+	cleanup_export_values();
 }

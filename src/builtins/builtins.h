@@ -33,4 +33,7 @@ int		builtin_unset(t_shell *shell, t_ast_node *node);
 bool	is_builtin(const char *cmd);
 int		execute_builtin(t_shell *shell, t_ast_node *node);
 
+char *track_export_value(char *value);
+void cleanup_export_values(void);
+
 #endif

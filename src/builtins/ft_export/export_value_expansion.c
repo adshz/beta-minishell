@@ -46,10 +46,10 @@ char	*export_handle_quoted_value(char *value)
 	if (val_len >= 2 && value[0] == '"' && value[val_len - 1] == '"')
 	{
 		unquoted = ft_substr(value, 1, val_len - 2);
-		return (unquoted);
+		return (track_export_value(unquoted));
 	}
 	unquoted = ft_strdup(value);
-	return (unquoted);
+	return (track_export_value(unquoted));
 }
 
 void	export_with_value(t_shell *shell, char *key, char *value)

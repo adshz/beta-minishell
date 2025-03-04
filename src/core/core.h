@@ -95,4 +95,7 @@ void	interactive_loop(t_shell *shell);
 void	init_signals(void);
 void	handle_sigint(int sig);
 
+int		track_fd(int fd);
+void	cleanup_fds(void);
+
 #endif
