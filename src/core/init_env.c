@@ -32,26 +32,21 @@
  */
 static void	init_shlvl(t_shell *shell)
 {
-	char	*tmp;
 	char	*key;
-	int		shlvl;
+	char	*value;
 
-	shlvl = 1;
 	key = ft_strdup("SHLVL");
-	if (!key)
-		return;
-	key = ft_hash_memory_collector(key, false);
-	tmp = hashmap_search(shell->env, key);
-	if (tmp && ft_atoi(tmp) > 0)
-		shlvl = ft_atoi(tmp) + 1;
-	tmp = ft_itoa(shlvl);
-	if (!tmp)
+	value = ft_strdup("1");
+	if (!key || !value)
 	{
+		free(key);
+		free(value);
 		handle_error(shell, ERROR_ENV, "Environment variable SHLVL failure");
 		return ;
 	}
-	tmp = ft_hash_memory_collector(tmp, false);
-	hashmap_insert(shell->env, key, tmp, 0);
+	key = ft_hash_memory_collector(key, false);
+	value = ft_hash_memory_collector(value, false);
+	hashmap_insert(shell->env, key, value, 0);
 	mark_env_modified(shell);
 }
 
