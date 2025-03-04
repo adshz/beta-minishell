@@ -13,7 +13,8 @@
 #include "utils.h"
 #include "libft.h"
 #include <stdlib.h>
-#include "memory_collector.h"
+#include "memory_collector/memory_collector.h"
+
 bool	is_only_whitespace(const char *str)
 {
 	if (!str)
