@@ -77,6 +77,29 @@ static void	cleanup_file_descriptors(t_shell *shell)
 	cleanup_fds();
 }
 
+static void cleanup_ast_by_type(t_list *node_list)
+{
+	t_list *current;
+	t_list *next;
+	t_ast_node *ast_node;
+
+	current = node_list;
+	while (current)
+	{
+		next = current->next;
+		ast_node = current->content;
+		if (ast_node && !ast_node->is_freed)
+		{
+			if (ast_node->type == AST_PIPE)
+				cleanup_pipeline_nodes();
+			else
+				free_ast(ast_node);
+		}
+		free(current);
+		current = next;
+	}
+}
+
 void	cleanup_shell(t_shell *shell)
 {
 	if (!shell)
@@ -89,5 +112,5 @@ void	cleanup_shell(t_shell *shell)
 	ft_hash_memory_collector(NULL, true);
 	cleanup_export_values();
 	cleanup_expanded_strings();
-	cleanup_pipeline_nodes();
+	cleanup_ast_by_type(*get_ast_mem_list());
 }
