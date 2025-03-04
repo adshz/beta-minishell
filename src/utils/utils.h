@@ -17,6 +17,7 @@
 # include "errors.h"
 
 /* Error handling */
+void	cleanup_ast_node(t_ast_node *node);
 void	handle_error(t_shell *shell, t_error_type error, const char *detail);
 void	cleanup_heredoc_signal_interrupt(t_ast_node *node);
 /* Cleanup functions */

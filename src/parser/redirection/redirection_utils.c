@@ -43,7 +43,7 @@ static t_ast_node	*create_file_node(t_token *file_token, \
 		free_ast(redir_node);
 		return (NULL);
 	}
-	return (file_node);
+	return (track_ast_node(file_node));
 }
 
 bool is_redirection_type(t_ast_type type)
@@ -64,6 +64,7 @@ static t_ast_node	*setup_redirection_nodes(t_token *current,
 	redir_node = create_redirection_node(current->type, file_token->value);
 	if (!redir_node)
 		return (NULL);
+	redir_node = track_ast_node(redir_node);
 	if (current->type != TOKEN_HEREDOC)
 	{
 		file_node = create_file_node(file_token, redir_node);

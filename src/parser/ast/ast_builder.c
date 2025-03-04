@@ -23,6 +23,7 @@ static void	init_node_data(t_ast_node *node, t_ast_type type)
 	node->data.content_path = NULL;
 	node->data.content_fd = -1;
 	node->data.delimiter = NULL;
+	node->is_freed = false;
 }
 
 static t_ast_node	*parser_handle_heredoc(t_ast_node *node, \

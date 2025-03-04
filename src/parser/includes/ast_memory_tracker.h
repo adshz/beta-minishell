@@ -13,9 +13,9 @@
 #ifndef AST_MEMORY_TRACKER_H
 # define AST_MEMORY_TRACKER_H
 
-# include "parser.h"
+# include "parser/parser.h"
 
-t_ast_node  *track_ast_node(t_ast_node *node, bool clean_flag);
+t_ast_node  *track_ast_node(t_ast_node *node);
 void        cleanup_ast_nodes(void);
 
 #endif 

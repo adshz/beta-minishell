@@ -13,7 +13,7 @@
 #include "shell.h"
 #include "libft.h"
 
-static void	cleanup_ast_node(t_ast_node *node)
+void	cleanup_ast_node(t_ast_node *node)
 {
 	if (!node)
 		return ;
@@ -64,9 +64,10 @@ void	cleanup_current_command(t_shell *shell)
 	}
 	if (shell->ast)
 	{
-		cleanup_ast_node(shell->ast);
+		track_ast_node(shell->ast);
 		shell->ast = NULL;
 	}
+	cleanup_ast_nodes();
 }
 
 void	cleanup_env_and_cmds(t_shell *shell)

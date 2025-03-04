@@ -16,27 +16,36 @@ static void	free_command_node(t_ast_node *node)
 	char	**args;
 
 	if (node->value)
+	{
 		free(node->value);
+		node->value = NULL;
+	}
 	if (node->args)
 	{
 		args = node->args;
 		while (*args)
-			free(*args++);
+		{
+			free(*args);
+			*args = NULL;
+			args++;
+		}
 		free(node->args);
+		node->args = NULL;
 	}
 }
 
 static void	free_redirection_node(t_ast_node *node)
 {
-	free_ast(node->left);
 	if (node->value)
+	{
 		free(node->value);
+		node->value = NULL;
+	}
 }
 
 static void	free_pipe_node(t_ast_node *node)
 {
-	free_ast(node->left);
-	free_ast(node->right);
+	(void)node;
 }
 
 static bool	is_ast_redirection_node(t_ast_type type)
@@ -47,8 +56,9 @@ static bool	is_ast_redirection_node(t_ast_type type)
 
 void	free_ast(t_ast_node *node)
 {
-	if (!node)
+	if (!node || node->is_freed)
 		return ;
+	node->is_freed = true;
 	if (node->type == AST_PIPE)
 		free_pipe_node(node);
 	else if (is_ast_redirection_node(node->type))

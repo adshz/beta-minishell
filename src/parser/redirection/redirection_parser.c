@@ -39,6 +39,8 @@ t_ast_node	*parse_redirection_construct(t_ast_node *left, t_token **tokens,
 	t_redir_parse	parse;
 
 	init_redir_parse(&parse, left, tokens, shell);
+	if (parse.result_left_node)
+		parse.result_left_node = track_ast_node(parse.result_left_node);
 	while (parse.current)
 	{
 		if (parse.current->type != TOKEN_WORD
@@ -46,6 +48,8 @@ t_ast_node	*parse_redirection_construct(t_ast_node *left, t_token **tokens,
 			break ;
 		if (!process_redir_token(&parse, tokens))
 			return (NULL);
+		if (parse.result_left_node)
+			parse.result_left_node = track_ast_node(parse.result_left_node);
 	}
 	return (parse.result_left_node);
 }

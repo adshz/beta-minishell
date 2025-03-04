@@ -47,7 +47,7 @@ static t_ast_node	*create_regular_file_node(t_ast_node *redir_node, \
 		free_ast(redir_node);
 		return (NULL);
 	}
-	return (file_node);
+	return (track_ast_node(file_node));
 }
 
 t_ast_node	*create_redir_file_node(const char *file_value, \

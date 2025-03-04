@@ -42,6 +42,7 @@ static bool	validate_remaining_tokens(t_token *current, t_ast_node *ast, \
 	if (current != NULL)
 	{
 		free_ast(ast);
+		cleanup_ast_nodes();
 		shell->exit_status = 258;
 		return (false);
 	}
@@ -83,7 +84,10 @@ t_ast_node	*process_consecutive_redirections(t_ast_node *node,
 	{
 		node = parse_redirection_construct(node, tokens, shell);
 		if (!node)
+		{
+			cleanup_ast_nodes();
 			return (NULL);
+		}
 		current = *tokens;
 	}
 	return (node);
@@ -120,12 +124,21 @@ t_ast_node	*parse(t_token *tokens, t_shell *shell)
 	if (!tokens)
 		return (NULL);
 	if (!validate_initial_pipe(tokens, shell))
+	{
+		cleanup_ast_nodes();
 		return (NULL);
+	}
 	current = tokens;
 	ast = parse_expression(&current, shell);
 	if (!ast)
+	{
+		cleanup_ast_nodes();
 		return (is_parse_error(current, shell));
+	}
 	if (!validate_remaining_tokens(current, ast, shell))
+	{
+		cleanup_ast_nodes();
 		return (NULL);
+	}
 	return (ast);
 }

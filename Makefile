@@ -33,6 +33,7 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				parser/ast_memory_tracker.c \
 				parser/redirection/redirection_token_utils.c \
 				parser/ast/get_ast_type.c \
 				memory_collector/heredoc_memory_collector.c \

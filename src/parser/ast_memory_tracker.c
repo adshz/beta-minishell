@@ -18,26 +18,32 @@ static t_list **get_ast_mem_list(void)
     return (&ast_mem_list);
 }
 
-t_ast_node *track_ast_node(t_ast_node *node, bool clean_flag)
+t_ast_node *track_ast_node(t_ast_node *node)
 {
     t_list **ast_mem_list;
 
-    ast_mem_list = get_ast_mem_list();
-    if (clean_flag)
-    {
-        ft_lstclear(ast_mem_list, (void (*)(void *))free_ast);
-        *ast_mem_list = NULL;
+    if (!node)
         return (NULL);
-    }
-    else if (node)
-    {
-        ft_lstadd_back(ast_mem_list, ft_lstnew(node));
-        return (node);
-    }
-    return (NULL);
+    ast_mem_list = get_ast_mem_list();
+    ft_lstadd_back(ast_mem_list, ft_lstnew(node));
+    return (node);
 }
 
 void cleanup_ast_nodes(void)
 {
-    track_ast_node(NULL, true);
+    t_list **ast_mem_list;
+    t_list *current;
+    t_list *next;
+
+    ast_mem_list = get_ast_mem_list();
+    current = *ast_mem_list;
+    while (current)
+    {
+        next = current->next;
+        if (current->content)
+            free_ast(current->content);
+        free(current);
+        current = next;
+    }
+    *ast_mem_list = NULL;
 } 

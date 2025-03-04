@@ -57,12 +57,20 @@ static t_ast_node	*init_redirection_by_type(t_token_type type, \
 	return (redir_node);
 }
 
-t_ast_node	*create_redirection_node(t_token_type type, const char *file_value)
+t_ast_node	*create_redirection_node(t_token_type type, const char *filename)
 {
-	t_ast_node	*redir_node;
+	t_ast_node	*node;
+	t_ast_node	*file_node;
 
-	redir_node = init_redirection_by_type(type, file_value);
-	if (!redir_node)
+	node = init_redirection_by_type(type, filename);
+	if (!node)
 		return (NULL);
-	return (create_redir_file_node(file_value, redir_node));
+	node = track_ast_node(node);
+	file_node = create_redir_file_node(filename, node);
+	if (!file_node)
+	{
+		free_ast(node);
+		return (NULL);
+	}
+	return (node);
 }

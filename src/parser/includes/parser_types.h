@@ -139,6 +139,7 @@ typedef struct s_ast_node
 	struct s_ast_node	*left;
 	struct s_ast_node	*right;
 	t_heredoc_data		data;
+	bool				is_freed;
 }	t_ast_node;
 
 typedef struct s_heredoc_chain
