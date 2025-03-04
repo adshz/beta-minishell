@@ -26,10 +26,22 @@ static void	cleanup_command_resources(t_shell *shell)
 	}
 	if (shell->cmds)
 	{
-		if (!in_final_cleanup && shell->ast == NULL)
-			ft_lstclear(&shell->cmds, NULL);
-		else if (!in_final_cleanup)
-			ft_lstclear(&shell->cmds, &free_cmd);
+		if (!in_final_cleanup)
+		{
+			if (shell->ast == NULL)
+			{
+				t_list *current = shell->cmds;
+				t_list *next;
+				while (current)
+				{
+					next = current->next;
+					free(current);
+					current = next;
+				}
+			}
+			else
+				ft_lstclear(&shell->cmds, &free_cmd);
+		}
 		shell->cmds = NULL;
 	}
 	if (!in_final_cleanup)
