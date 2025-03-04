@@ -46,6 +46,14 @@ static t_ast_node	*create_file_node(t_token *file_token, \
 	return (file_node);
 }
 
+bool is_redirection_type(t_ast_type type)
+{
+	return (type == AST_REDIR_IN || 
+			type == AST_REDIR_OUT || 
+			type == AST_REDIR_APPEND || 
+			type == AST_HEREDOC);
+}
+
 static t_ast_node	*setup_redirection_nodes(t_token *current,
 										t_token *file_token,
 										t_ast_node *result)
@@ -62,6 +70,16 @@ static t_ast_node	*setup_redirection_nodes(t_token *current,
 		if (!file_node)
 			return (NULL);
 		redir_node->right = file_node;
+	}
+	if (!result)
+	{
+		redir_node->left = NULL;
+		return (redir_node);
+	}
+	if (is_redirection_type(result->type))
+	{
+		redir_node->left = result;
+		return (redir_node);
 	}
 	redir_node->left = result;
 	return (redir_node);

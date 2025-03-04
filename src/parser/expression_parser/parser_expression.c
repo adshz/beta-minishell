@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 #include "parser/parser.h"
 
-static bool	handle_next_token_expression(t_token *token, t_shell *shell)
+static bool handle_next_token_expression(t_token *token, t_shell *shell)
 {
-	char	*expanded;
+	char *expanded;
 
 	expanded = NULL;
 	if (!token->next || !ft_strchr(token->next->value, '$'))
@@ -26,9 +26,9 @@ static bool	handle_next_token_expression(t_token *token, t_shell *shell)
 	return (true);
 }
 
-static bool	handle_token_expansion(t_token *token, t_shell *shell)
+static bool handle_token_expansion(t_token *token, t_shell *shell)
 {
-	char	*expanded;
+	char *expanded;
 
 	expanded = NULL;
 	expanded = parse_handle_variable_expansion(shell, token->value);
@@ -41,21 +41,21 @@ static bool	handle_token_expansion(t_token *token, t_shell *shell)
 
 /**
  * @brief Expands variables in a token if `$`present.
- * 
- * This function first check if we need to expand, 
- * if not we just build the expression tree 
- * if we need to expand, we check if the variable is 
+ *
+ * This function first check if we need to expand,
+ * if not we just build the expression tree
+ * if we need to expand, we check if the variable is
  * a standalone variable or part of a larger string.
- * 
+ *
  * we skip the first tokeen if it has dollar sign in the middle
  * and we expand the next token if it has a dollar sign.
  * @param token The token to expand
  * @param shell The shell instance
  * @return true if the token was expanded, false otherwise
  */
-static bool	expand_variable_in_token(t_token *token, t_shell *shell)
+static bool expand_variable_in_token(t_token *token, t_shell *shell)
 {
-	char	*dollar_pos;
+	char *dollar_pos;
 
 	if (!ft_strchr(token->value, '$'))
 		return (true);
@@ -65,16 +65,37 @@ static bool	expand_variable_in_token(t_token *token, t_shell *shell)
 	return (handle_token_expansion(token, shell));
 }
 
-static t_ast_node	*build_expression_tree(t_token **tokens, t_shell *shell)
+static t_ast_node *build_expression_tree(t_token **tokens, t_shell *shell)
 {
-	t_ast_node	*node;
+	t_ast_node *node;
 
 	node = NULL;
-	node = parse_pipeline(tokens, shell);
+	while (*tokens && is_redirection_token((*tokens)->type))
+	{
+		node = parse_redirection_construct(node, tokens, shell);
+		if (!node)
+			return (NULL);
+	}
+	if (*tokens && !is_redirection_token((*tokens)->type))
+	{
+		if (node)
+		{
+			t_ast_node *cmd = parse_pipeline(tokens, shell);
+			if (!cmd)
+				return (NULL);
+			node->left = cmd;
+		}
+		else
+			node = parse_pipeline(tokens, shell);
+	}
+		while (*tokens && is_redirection_token((*tokens)->type))
+	{
+		node = parse_redirection_construct(node, tokens, shell);
+		if (!node)
+			return (NULL);
+	}
 	if (!node)
 		return (NULL);
-	if (*tokens && (*tokens)->type == TOKEN_REDIRECT_IN)
-		node = parse_redirection_construct(node, tokens, shell);
 	return (node);
 }
 
@@ -97,7 +118,7 @@ static t_ast_node	*build_expression_tree(t_token **tokens, t_shell *shell)
  * @see parse_pipeline() for pipeline handling
  * @see parse_redirection_construct() for redirection handling
  */
-t_ast_node	*parse_expression(t_token **tokens, t_shell *shell)
+t_ast_node *parse_expression(t_token **tokens, t_shell *shell)
 {
 	if (!tokens || !*tokens)
 		return (NULL);

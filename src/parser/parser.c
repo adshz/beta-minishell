@@ -13,6 +13,7 @@
 #include "parser.h"
 #include "lexer/lexer.h"
 #include "expander/expander.h"
+#include "includes/ast_memory_tracker.h"
 
 static bool	validate_initial_pipe(t_token *token, t_shell *shell)
 {
@@ -31,6 +32,7 @@ static t_ast_node	*is_parse_error(t_token *current, t_shell *shell)
 {
 	if (current && is_redirection_token(current->type))
 		shell->exit_status = 258;
+	cleanup_ast_nodes();
 	return (NULL);
 }
 

@@ -23,6 +23,7 @@
 # include "includes/parser_redirection.h"
 # include "includes/parser_variable_expansion.h"
 # include "includes/parser_expressions.h"
+# include "includes/ast_memory_tracker.h"
 
 t_ast_node	*parse(t_token *tokens, t_shell *shell);
 #endif

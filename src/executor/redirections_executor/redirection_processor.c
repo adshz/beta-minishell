@@ -69,8 +69,8 @@ static int	process_other_redirections(t_shell *shell, t_ast_node **redir_nodes,
 {
 	int	i;
 
-	i = redir_count - 1;
-	while (i >= 0)
+	i = 0;
+	while (i < redir_count)
 	{
 		if (redir_nodes[i]->type != AST_HEREDOC)
 		{
@@ -81,7 +81,7 @@ static int	process_other_redirections(t_shell *shell, t_ast_node **redir_nodes,
 				return (1);
 			}
 		}
-		i--;
+		i++;
 	}
 	return (0);
 }
