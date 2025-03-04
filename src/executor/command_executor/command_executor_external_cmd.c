@@ -13,6 +13,14 @@
 #include "executor/executor.h"
 #include "utils/utils.h"
 
+static void	extern_cleanup_resources(char *cmd_path, char **env_array)
+{
+	if (cmd_path)
+		free(cmd_path);
+	if (env_array)
+		ft_free_array(env_array);
+}
+
 static int	prepare_command(t_shell *shell, t_ast_node *node,
 						char **cmd_path, char ***env_array)
 {
