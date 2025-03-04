@@ -36,7 +36,7 @@ void	remove_from_ast_list(t_ast_node *node)
 				prev->next = current->next;
 			else
 				*ast_mem_list = current->next;
-			free(current);
+			current->content = NULL; 
 			return ;
 		}
 		prev = current;
