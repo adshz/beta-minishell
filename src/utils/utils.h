@@ -41,4 +41,5 @@ void	cleanup_ast_node_data(t_ast_node *node);
 /* Memory-tracked string functions */
 char	*tracked_strdup(const char *s);
 char	*tracked_itoa(int n);
+t_list  *tracked_lstnew(void *content);
 #endif

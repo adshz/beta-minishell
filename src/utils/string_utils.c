@@ -122,3 +122,13 @@ char	*tracked_itoa(int n)
 		return (NULL);
 	return (ft_hash_memory_collector(str, false));
 }
+
+t_list *tracked_lstnew(void *content)
+{
+	t_list *node;
+
+	node = ft_lstnew(content);
+	if (!node)
+		return (NULL);
+	return (ft_hash_memory_collector(node, false));
+}
