@@ -41,6 +41,7 @@ static int	get_exit_code(t_shell *shell, t_ast_node *node)
 int	builtin_exit(t_shell *shell, t_ast_node *node)
 {
 	int	exit_code;
+	bool in_main_loop;
 
 	if (!shell || !node)
 		return (1);
@@ -52,6 +53,8 @@ int	builtin_exit(t_shell *shell, t_ast_node *node)
 		return (1);
 	if (shell->in_pipe)
 		return (exit_code);
-	cleanup_shell(shell);
+	in_main_loop = shell->ast != NULL || shell->tokens != NULL;
+	if (!in_main_loop)
+		cleanup_shell(shell);
 	exit(exit_code);
 }

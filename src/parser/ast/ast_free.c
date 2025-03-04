@@ -56,14 +56,17 @@ static bool	is_ast_redirection_node(t_ast_type type)
 
 void	free_ast(t_ast_node *node)
 {
+	t_ast_type type;
+
 	if (!node || node->is_freed)
 		return ;
 	node->is_freed = true;
-	if (node->type == AST_PIPE)
+	type = node->type;
+	if (type == AST_PIPE)
 		free_pipe_node(node);
-	else if (is_ast_redirection_node(node->type))
+	else if (is_ast_redirection_node(type))
 		free_redirection_node(node);
-	else if (node->type == AST_COMMAND)
+	else if (type == AST_COMMAND)
 		free_command_node(node);
 	free(node);
 }

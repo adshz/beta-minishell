@@ -21,10 +21,18 @@ static t_list **get_ast_mem_list(void)
 t_ast_node *track_ast_node(t_ast_node *node)
 {
     t_list **ast_mem_list;
+    t_list *current;
 
     if (!node)
         return (NULL);
     ast_mem_list = get_ast_mem_list();
+    current = *ast_mem_list;
+    while (current)
+    {
+        if (current->content == node)
+            return (node);
+        current = current->next;
+    }
     ft_lstadd_back(ast_mem_list, ft_lstnew(node));
     return (node);
 }
