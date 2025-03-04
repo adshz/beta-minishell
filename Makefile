@@ -33,6 +33,7 @@ SRC_DIR		:=	./src
 OBJ_DIR		:=	./obj
 
 SRCS		:=	\
+				utils/extern_cmd_cleanup.c \
 				parser/redirection/redirection_helper.c \
 				utils/mem_tracker_utils.c \
 				utils/cleanup_utils.c \

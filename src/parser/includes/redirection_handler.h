@@ -15,6 +15,7 @@
 
 # include "parser_types.h"
 
+int			check_input_file(const char *filename);
 t_ast_node	*create_file_node(t_token *file_token, \
 								t_ast_node *redir_node);
 bool		validate_file_token(t_token *file_token);
