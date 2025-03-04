@@ -65,7 +65,6 @@ static bool	expand_variable_in_token(t_token *token, t_shell *shell)
 	return (handle_token_expansion(token, shell));
 }
 
-
 /**
  * @brief Parses an expression from the token stream.
  *
